@@ -6,7 +6,7 @@ const int ROBOT_NUM_COLUMNS = 4;
 const int OBSTACLE_NUM_COLUMNS = 3;
 #include <cmath>
 template <class T> class ENVIRONMENT : public sc_module{
-
+	//test
 public:
 	//	PORTS
 	sc_in<bool> clock;
