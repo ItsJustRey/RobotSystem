@@ -1,0 +1,33 @@
+﻿Build started 10/5/2017 8:05:29 PM.
+     1>Project "C:\Users\rrubio04\Documents\Github\RobotSystem\Test\Test.vcxproj" on node 2 (Build target(s)).
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppBuild.targets(388,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (Test.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _CRT_SECURE_NO_WARNINGS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt /vmg ENVIRONMENT.cpp main.cpp ROBOT.cpp SERVER.cpp
+         SERVER.cpp
+     1>c:\users\rrubio04\documents\github\robotsystem\test\server.h(2): warning C4005: '_CRT_SECURE_NO_WARNINGS' : macro redefinition
+                 command-line arguments :  see previous definition of '_CRT_SECURE_NO_WARNINGS'
+         ROBOT.cpp
+     1>c:\users\rrubio04\documents\github\robotsystem\test\robot.h(2): warning C4005: '_CRT_SECURE_NO_WARNINGS' : macro redefinition
+                 command-line arguments :  see previous definition of '_CRT_SECURE_NO_WARNINGS'
+         main.cpp
+     1>c:\users\rrubio04\documents\github\robotsystem\test\environment.h(2): warning C4005: '_CRT_SECURE_NO_WARNINGS' : macro redefinition
+                 command-line arguments :  see previous definition of '_CRT_SECURE_NO_WARNINGS'
+     1>c:\users\rrubio04\documents\github\robotsystem\test\environment.h(99): warning C4244: 'initializing' : conversion from 'sc_dt::uint_type' to 'int', possible loss of data
+                 c:\users\rrubio04\documents\github\robotsystem\test\environment.h(58) : while compiling class template member function 'void ENVIRONMENT<environment_T>::prc_environment(void)'
+                 c:\users\rrubio04\documents\github\robotsystem\test\environment.h(54) : see reference to function template instantiation 'void ENVIRONMENT<environment_T>::prc_environment(void)' being compiled
+                 c:\users\rrubio04\documents\github\robotsystem\test\main.cpp(81) : see reference to class template instantiation 'ENVIRONMENT<environment_T>' being compiled
+         ENVIRONMENT.cpp
+     1>c:\users\rrubio04\documents\github\robotsystem\test\environment.h(2): warning C4005: '_CRT_SECURE_NO_WARNINGS' : macro redefinition
+                 command-line arguments :  see previous definition of '_CRT_SECURE_NO_WARNINGS'
+         Generating Code...
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\rrubio04\Documents\Github\RobotSystem\Debug\PROJECT_1.exe" /INCREMENTAL /NOLOGO systemc.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\rrubio04\Documents\Github\RobotSystem\Debug\PROJECT_1.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\rrubio04\Documents\Github\RobotSystem\Debug\PROJECT_1.lib" /MACHINE:X86 Debug\ENVIRONMENT.obj
+         Debug\main.obj
+         Debug\ROBOT.obj
+         Debug\SERVER.obj
+         Test.vcxproj -> C:\Users\rrubio04\Documents\Github\RobotSystem\Debug\PROJECT_1.exe
+     1>Done Building Project "C:\Users\rrubio04\Documents\Github\RobotSystem\Test\Test.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:03.71
