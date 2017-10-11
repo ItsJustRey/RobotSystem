@@ -9,7 +9,7 @@ const int ROBOT_NUM_COLUMNS = 6;
 const int OBSTACLE_NUM_COLUMNS = 5;
 const int E_NUM_ROBOTS = 2;
 template <class T> class ENVIRONMENT : public sc_module{
-	//test
+	//suckaniggadickforaniphone6...
 public:
 	//	PORTS
 	sc_in<bool> clock;
