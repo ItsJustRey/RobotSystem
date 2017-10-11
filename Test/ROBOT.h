@@ -12,6 +12,7 @@ public:
 	sc_in<bool> s_status_port;		// USED TO READ CONTROL FROM SERVER
 	sc_out<bool> r_status_port;		// USED TO TRANSFER STATUSES BETWEEN SERVER AND ENVIRONMENT
 	sc_in<bool> e_status_port;		// USED TO READ CONTROL FROM ENVIRONMENT 
+	sc_inout<bool>boundary_port;
 
 
 	SC_HAS_PROCESS(ROBOT);
@@ -23,34 +24,30 @@ public:
 		
 	}
 	void prc_robot(){
-		id_port.write(*(_id));
+		//id_port.write(*(_id));
 
 		// CHECK STATUS
 
-		// ENVIRONMENT SAID YOU CAN MOVE
-		if (e_status_port.read() == 1){
-
-			// SERVER SAID YOU CAN MOVE
-			if (s_status_port.read() == 1){
-				r_status_port.write(1);
-			}
-			// SERVER SAID YOU CANT MOVE
-			else{
-				r_status_port.write(0);
-			}
+		// ENVIRONMENT TOLD ROBOT TO STOP
+		if (e_status_port.read() == 0){
+			r_status_port.write(0);		// ROBOT SENDS SIGNAL TO SERVER THAT IT STOPPED
 
 		}
 
-		// ENVIRONMENT SAID YOU CANT MOVE
+		// ENVIRONMENT AND SERVER LETS ROBOT MOVE
+		//else if (e_status_port.read() == 1 && s_status_port.read() == 1){
 		else{
-			r_status_port.write(0);
+			r_status_port.write(1);
 
 		}
 
-
+		if (boundary_port.read() == 1)
+		{
+			boundary_port.write(1);
+		}
 
 		cout << endl;
-		cout << "~~~~~~~~~~~~~ROBOT " << id_port.read() << "~~~~~~~~~~~~~" << endl;
+		cout << "~~~~~~~~~~~~~ROBOT " << *(_id) << "~~~~~~~~~~~~~" << endl;
 		cout << "=================================" << endl;
 		cout << "| Robot Status:     " << r_status_port.read() << "\t\t|" << endl;
 		cout << "| Server Status:    " << s_status_port.read() << "\t\t|" << endl;
