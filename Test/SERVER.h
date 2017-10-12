@@ -17,6 +17,7 @@ public:
 	sc_in<bool> r_status_port[S_NUM_ROBOTS];				// USED TO READ CONTROL FROM EACH ROBOT 
 	sc_out<bool> s_status_port[S_NUM_ROBOTS];				// USED TO TRANSFER CONTROL TO EACH ROBOT
 	sc_in<bool>boundary_port[S_NUM_ROBOTS];
+	sc_out<bool>gridUpdate_port[S_NUM_ROBOTS];
 
 	sc_uint<8>  r_index_array[S_NUM_ROBOTS];				// COLUMN FOR EACH ROBOT INDEX
 	sc_uint<8>  r_cg_array[S_NUM_ROBOTS];					// COLUMN FOR EACH ROBOT's CURRENT GRID
@@ -69,7 +70,7 @@ public:
 		for (int thisRobot = 0; thisRobot < *(_numRobots); thisRobot++){
 
 			// ROBOT STOPPED (BECAUSE OF BOUNDARY)
-			if (boundary_port[thisRobot].read() == 1){
+			
 
 				// CHECK ALL OTHER ROBOTS CURRENT GRID
 				for (int j = 0; j < *(_numRobots); j++){
@@ -77,27 +78,30 @@ public:
 					if (j != thisRobot){
 						// IF THIS ROBOT's NG IS EQUAL TO ANOTHER ROBOT'S CURRENT GRID
 						// TELL THIS ROBOT TO STOP B/C THERE IS ANOTHER ROBOT IN NEXT GRID
-						if (r_ng_array[thisRobot] == r_cg_array[j]){
+						 if (/*r_ng_array[thisRobot] == r_cg_array[j]*/ boundary_port[thisRobot].read() == 1){ //Checks if robot is on boundary
 							s_status_port[thisRobot].write(0);
 							r_status_array[thisRobot] = 0;
-						
+							r_cg_array[thisRobot] += 1; //Increments current grid of robot in server
+							r_ng_array[thisRobot] += 1; //Increments next grid of robot in server
+							gridUpdate_port[thisRobot].write(1); //Sends a signal for environment to update its grid in data structure
+
 
 						}
 						else{
 							s_status_port[thisRobot].write(1);
 							r_status_array[thisRobot] = 1;
-							r_cg_array[thisRobot] = r_ng_array[thisRobot];
-							r_ng_array[thisRobot] += 1;
+							/*r_cg_array[thisRobot] += 1;
+							r_ng_array[thisRobot] += 1;*/
+							gridUpdate_port[thisRobot].write(0);
 
 						}
 					}
 					else{
 						// NOT THIS ROBOT
-						break;
 					}
 				}
 			}
-		}
+		
 
 
 
@@ -116,7 +120,6 @@ public:
 				cout << server_array[i][j] << "\t|";
 			}
 			cout << endl;
-			//cout << boundary_port[i].read() << endl;
 		}
 		cout << "=================================" << endl;
 	}
@@ -135,7 +138,7 @@ public:
 		cout << endl << "~~~~~~~~~~~~~~~~~~~~3rd CLOCK SERVER~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<< endl;
 		wait();
 		
-	/*	cout << endl << "~~~~~~~~~~~~~~~~~~~~4th CLOCK SERVER~~~~~~~~~~~~~~~~~~~~" << endl;
+		cout << endl << "~~~~~~~~~~~~~~~~~~~~4th CLOCK SERVER~~~~~~~~~~~~~~~~~~~~" << endl;
 		wait();
 
 		cout << endl << "~~~~~~~~~~~~~~~~~~~~5th CLOCK SERVER~~~~~~~~~~~~~~~~~~~~" << endl;
@@ -155,7 +158,38 @@ public:
 
 		cout << endl << "~~~~~~~~~~~~~~~~~~~~10th CLOCK SERVER~~~~~~~~~~~~~~~~~~~~ "<< endl;
 		wait();
-*/
+
+		cout << endl << "~~~~~~~~~~~~~~~~~~~~11th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+		wait();
+
+		cout << endl << "~~~~~~~~~~~~~~~~~~~~12th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+		wait();
+
+		cout << endl << "~~~~~~~~~~~~~~~~~~~~13th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+		wait();
+
+		cout << endl << "~~~~~~~~~~~~~~~~~~~~14th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+		wait();
+
+		cout << endl << "~~~~~~~~~~~~~~~~~~~~15th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+		wait();
+
+		cout << endl << "~~~~~~~~~~~~~~~~~~~~16th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+		wait();
+
+		cout << endl << "~~~~~~~~~~~~~~~~~~~~17th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+		wait();
+
+		cout << endl << "~~~~~~~~~~~~~~~~~~~~18th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+		wait();
+
+		cout << endl << "~~~~~~~~~~~~~~~~~~~~19th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+		wait();
+
+		cout << endl << "~~~~~~~~~~~~~~~~~~~~20th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+		wait();
+
+
 		
 	}
 

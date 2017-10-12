@@ -13,6 +13,7 @@ public:
 	sc_out<bool> r_status_port;		// USED TO TRANSFER STATUSES BETWEEN SERVER AND ENVIRONMENT
 	sc_in<bool> e_status_port;		// USED TO READ CONTROL FROM ENVIRONMENT 
 	sc_inout<bool>boundary_port;
+	sc_inout<bool>gridUpdate_port;
 
 
 	SC_HAS_PROCESS(ROBOT);
@@ -46,6 +47,11 @@ public:
 			boundary_port.write(1);
 		}
 
+		else if (gridUpdate_port.read() == 1)
+		{
+
+			gridUpdate_port.write(1);
+		}
 		cout << endl;
 		cout << "~~~~~~~~~~~~~ROBOT " << *(_id) << "~~~~~~~~~~~~~" << endl;
 		cout << "=================================" << endl;

@@ -24,6 +24,8 @@ int sc_main(int argc, char *argv[]){
 
 	sc_signal<bool>             boundary_sig[NUM_ROBOTS];
 
+	sc_signal<bool>             gridUpdate_sig[NUM_ROBOTS];
+
 	// CREATE ROBOT 0
 	typedef int robot_T;
 	const robot_T r0_id = 0;
@@ -38,6 +40,7 @@ int sc_main(int argc, char *argv[]){
 	robot0.r_status_port(r_status_array_sig[r0_id]);
 	robot0.e_status_port(e_status_array_sig[r0_id]);
 	robot0.boundary_port(boundary_sig[r0_id]);
+	robot0.gridUpdate_port(gridUpdate_sig[r0_id]);
 	
 	// CREATE ROBOT 1
 	typedef int robot_T;
@@ -53,6 +56,7 @@ int sc_main(int argc, char *argv[]){
 	robot1.r_status_port(r_status_array_sig[r1_id]);
 	robot1.e_status_port(e_status_array_sig[r1_id]);
 	robot1.boundary_port(boundary_sig[r1_id]);
+	robot1.gridUpdate_port(gridUpdate_sig[r1_id]);
 
 	// CREATE SERVER 
 	typedef int server_T;
@@ -65,6 +69,7 @@ int sc_main(int argc, char *argv[]){
 		server1.r_status_port[i](r_status_array_sig[i]);
 		server1.s_status_port[i](s_status_array_sig[i]);
 		server1.boundary_port[i](boundary_sig[i]);
+		server1.gridUpdate_port[i](gridUpdate_sig[i]);
 	}
 
 
@@ -80,9 +85,10 @@ int sc_main(int argc, char *argv[]){
 		environment1.r_status_port[i](r_status_array_sig[i]);
 		environment1.e_status_port[i](e_status_array_sig[i]);
 		environment1.boundary_port[i](boundary_sig[i]);
+		environment1.gridUpdate_port[i](gridUpdate_sig[i]);
 	}
 
-	sc_start(5, SC_NS);
+	sc_start(20, SC_NS);
 
 	return 0;
 }

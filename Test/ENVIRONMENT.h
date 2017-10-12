@@ -19,6 +19,7 @@ public:
 	sc_in<bool> r_status_port[E_NUM_ROBOTS];					// USED TO READ CONTROL FROM EACH ROBOT 
 	sc_out<bool> e_status_port[E_NUM_ROBOTS];					// USED TO TRANSFER CONTROL TO EACH ROBOT
 	sc_out<bool> boundary_port[E_NUM_ROBOTS];
+	sc_in<bool>gridUpdate_port[E_NUM_ROBOTS];
 
 	sc_in <sc_uint<8> > r_id_port[E_NUM_ROBOTS];				// USED TO IDENTIFY EACH ROBOT
 
@@ -122,6 +123,7 @@ public:
 			// IF ROBOT IS MOVING, UPDATE DATA STRUCTURES ACCORDINGLY
 			if (r_status_port[i].read() == 1){
 
+
 				// CHECK IF ROBOT IS ABOUT TO CROSS BOUNDARY
 				if (r_x_array[i] + r_speed_array[i] >= 5){
 
@@ -135,15 +137,18 @@ public:
 					e_status_port[i].write(1);	// TELL ROBOT TO GO
 					r_x_array[i] = r_x_array[i] + r_speed_array[i];
 					boundary_port[i].write(0);
+
 				}
 
 			}
-
-			if (boundary_port[i].read() == 1)
+			if (gridUpdate_port[i].read() == 1)
 			{
-				r_x_array[i] *= 0;
 				r_cg_array[i] += 1;
 				r_ng_array[i] += 1;
+			}
+		    if (boundary_port[i].read() == 1)
+			{
+				r_x_array[i] *= 0;
 				boundary_port[i].write(0);
 			}
 
@@ -170,6 +175,7 @@ public:
 			}
 			cout << endl;
 			cout << "Boundary Port" << boundary_port[i].read() << endl;
+			cout << "Grid Update " << gridUpdate_port[i].read() << endl;
 		}
 		cout << "=================================================" << endl;
 
@@ -205,7 +211,7 @@ public:
 		cout << endl << "~~~~~~~~~~~~~~~~~~~~4th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 		wait();
 
-		/*cout << endl << "~~~~~~~~~~~~~~~~~~~~5th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+		cout << endl << "~~~~~~~~~~~~~~~~~~~~5th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 		wait();
 
 		cout << endl << "~~~~~~~~~~~~~~~~~~~~6th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
@@ -221,7 +227,37 @@ public:
 		wait();
 
 		cout << endl << "~~~~~~~~~~~~~~~~~~~~10th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-		wait();*/
+		wait();
+
+		cout << endl << "~~~~~~~~~~~~~~~~~~~~11th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+		wait();
+
+		cout << endl << "~~~~~~~~~~~~~~~~~~~~12th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+		wait();
+
+		cout << endl << "~~~~~~~~~~~~~~~~~~~~13th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+		wait();
+
+		cout << endl << "~~~~~~~~~~~~~~~~~~~~14th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+		wait();
+
+		cout << endl << "~~~~~~~~~~~~~~~~~~~~15th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+		wait();
+
+		cout << endl << "~~~~~~~~~~~~~~~~~~~~16th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+		wait();
+
+		cout << endl << "~~~~~~~~~~~~~~~~~~~~17th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+		wait();
+
+		cout << endl << "~~~~~~~~~~~~~~~~~~~~18th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+		wait();
+
+		cout << endl << "~~~~~~~~~~~~~~~~~~~~19th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+		wait();
+
+		cout << endl << "~~~~~~~~~~~~~~~~~~~~20th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+		wait();
 
 
 	}
