@@ -9,8 +9,8 @@ const int ROBOT_NUM_COLUMNS = 8;
 const int OBSTACLE_NUM_COLUMNS = 5;
 const int E_NUM_ROBOTS = 2;
 const int E_NUM_OBSTACLES = 2;
-const int GRID_WIDTH = 5;
-const int GRID_HEIGHT = 5;
+const int GRID_WIDTH = 10;
+const int GRID_HEIGHT = 10;
 
 template <class T> class ENVIRONMENT : public sc_module{
 public:

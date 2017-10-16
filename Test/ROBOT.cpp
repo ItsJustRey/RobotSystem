@@ -11,31 +11,31 @@ void ROBOT<robot_T> ::prc_robot(){
 	{
 		gridUpdate_port.write(1);
 
-		// OBSTACLE
-		// Server(in) <-- ROBOT(inout) <-- Environment(out)
-		if (obstacle_port.read() == 1){
-			obstacle_port.write(1);
-		}
-		else{
-			obstacle_port.write(0);
-		}
-
-		// BOUNDARY
-		// Server(in) <-- ROBOT(inout) <-- Environment(out)
-		if (boundary_port.read() == 1){
-			boundary_port.write(1);
-		}
-		else{
-			boundary_port.write(0);
-		}
+	
 	}
 	else{
 		gridUpdate_port.write(0);
-		boundary_port.write(0);
+		//boundary_port.write(0);
+		//obstacle_port.write(0);
+	}
+
+	// OBSTACLE
+	// Server(in) <-- ROBOT(inout) <-- Environment(out)
+	if (obstacle_port.read() == 1){
+		obstacle_port.write(1);
+	}
+	else{
 		obstacle_port.write(0);
 	}
 
-	
+	// BOUNDARY
+	// Server(in) <-- ROBOT(inout) <-- Environment(out)
+	if (boundary_port.read() == 1){
+		boundary_port.write(1);
+	}
+	else{
+		boundary_port.write(0);
+	}
 	
 }
 

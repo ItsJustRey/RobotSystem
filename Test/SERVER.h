@@ -2,7 +2,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 const int SERVER_MAX_ROBOTS = 5;
-const int NUM_COLUMNS = 3;
+const int NUM_COLUMNS = 5;
 const int S_NUM_ROBOTS = 2;
 
 template <class T> class SERVER : public sc_module {
@@ -24,6 +24,9 @@ public:
 
 	sc_int<8>  server_array[S_NUM_ROBOTS][NUM_COLUMNS];	// SERVER DATA STRUCTURE 
 	
+
+	sc_signal<bool> checkingBoundary[S_NUM_ROBOTS];	// USED TO HOLD THE ROBOT WHILE CHECKING BOUNDARY
+
 	void prc_server();
 	void print_server();
 
