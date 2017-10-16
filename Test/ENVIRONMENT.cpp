@@ -9,10 +9,10 @@ void ENVIRONMENT<environment_T>::prc_environment(){
 		// Server(out)-- >ROBOT(inout)--> ENVIRONMENT(in)
 		if (gridUpdate_port[i].read() == 1 && checkingBoundary[i] == true)
 		{
-			checkingBoundary[i] = false;	// finally received signal 
-			r_cg_array[i] += 1;				// UPDATE GRIDS
-			r_ng_array[i] += 1;				// UPDATE GRIDS
-			r_x_array[i] = -1;				// START FROM BEGINNING OF GRID
+			checkingBoundary[i] = false;		// finally received signal 
+			r_cg_array[i] += 1;					// UPDATE GRIDS
+			r_ng_array[i] += 1;					// UPDATE GRIDS
+			r_x_array[i] = -1;					// START FROM BEGINNING OF GRID
 		}
 		else{
 			r_cg_array[i] = r_cg_array[i];		// DONT UPDATE GRIDS
@@ -64,6 +64,39 @@ void ENVIRONMENT<environment_T>::prc_environment(){
 		}
 	}
 	
+
+}
+
+
+void ENVIRONMENT<environment_T>::prc_robot0_obstacle_detected(){
+
+	cout << " PRC_ROBOT0_OBSTACLE_DETECTED " << endl;
+
+	// EITHER MOVE OBJECT OR MOVE ROBOT IDK???
+
+	// PROB MOVE ROBOT
+
+
+
+}
+
+
+void ENVIRONMENT<environment_T>::prc_robot1_obstacle_detected(){
+
+	cout << " PRC_ROBOT1_OBSTACLE_DETECTED " << endl;
+
+	// EITHER MOVE OBJECT OR MOVE ROBOT IDK???
+
+	// PROB MOVE ROBOT
+
+
+
+}
+
+
+void ENVIRONMENT<environment_T>::prc_print_environment(){
+
+
 	cout << endl << "~~~~~~~~~~~~~~~~~~~~~~~ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 	cout << endl << "===========================ROBOT ARRAY===========================" << endl;
 	cout << "|RI\t|CG\t|NG\t|X\t|Y\t|BOUND\t|GRID\t|OBST\t|" << endl;
@@ -88,22 +121,22 @@ void ENVIRONMENT<environment_T>::prc_environment(){
 	}
 	cout << "=================================================================" << endl;
 
-	
+
 	cout << endl << "==============OBSTACLE ARRAY=============" << endl;
 	cout << "|OI\t|CG\t|NG\t|X\t|Y\t|" << endl;
 	cout << "=========================================" << endl;
 	for (int i = 0; i < E_NUM_OBSTACLES; i++){
 
-	e_obstacle_array[i][0] = o_index_array[i];
-	e_obstacle_array[i][1] = o_cg_array[i];
-	e_obstacle_array[i][2] = o_ng_array[i];
-	e_obstacle_array[i][3] = o_x_array[i];
-	e_obstacle_array[i][4] = o_y_array[i];
-	cout << "|";
-	for (int j = 0; j < OBSTACLE_NUM_COLUMNS; j++){
-	cout << e_obstacle_array[i][j] << "\t|";
-	}
-	cout << endl;
+		e_obstacle_array[i][0] = o_index_array[i];
+		e_obstacle_array[i][1] = o_cg_array[i];
+		e_obstacle_array[i][2] = o_ng_array[i];
+		e_obstacle_array[i][3] = o_x_array[i];
+		e_obstacle_array[i][4] = o_y_array[i];
+		cout << "|";
+		for (int j = 0; j < OBSTACLE_NUM_COLUMNS; j++){
+			cout << e_obstacle_array[i][j] << "\t|";
+		}
+		cout << endl;
 	}
 	cout << "=========================================" << endl;
 
@@ -112,5 +145,5 @@ void ENVIRONMENT<environment_T>::prc_environment(){
 	cout << "`````````````````````````````````````````````````````````````````" << endl;
 	cout << "`````````````````````````````````````````````````````````````````" << endl;
 	cout << "`````````````````````````````````````````````````````````````````" << endl;
-}
 
+}

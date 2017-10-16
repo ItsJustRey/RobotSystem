@@ -43,11 +43,16 @@ public:
 	sc_signal<bool> detectedObstacle[E_NUM_ROBOTS];	// USED TO HOLD THE ROBOT WHILE CHECKING OBSTACLE
 
 	void prc_environment();
+	void prc_robot0_obstacle_detected();
+	void prc_robot1_obstacle_detected();
+	void prc_print_environment();
+	
 
 	SC_HAS_PROCESS(ENVIRONMENT);
 	ENVIRONMENT(sc_module_name name, const T* numRobots, const T* numObstacles, const T* r0_id, const T* r0_speed, const T* r0_grid, const T* r0_x, const T* r0_y, const T* r1_id, const T* r1_speed, const T* r1_grid, const T* r1_x, const T* r1_y) :
 		sc_module(name), _numRobots(numRobots), _numObstacles(numObstacles), _r0_id(r0_id), _r0_speed(r0_speed), _r0_grid(r0_grid), _r0_x(r0_x), _r0_y(r0_y),  _r1_id(r1_id), _r1_speed(r1_speed), _r1_grid(r1_grid), _r1_x(r1_x), _r1_y(r1_y)
 	{
+
 		r_index_array[*(r0_id)] = *(r0_id);
 		r_cg_array[*(r0_id)] = *(r0_grid);
 		r_ng_array[*(r0_id)] = *(r0_grid) + 1;
@@ -87,81 +92,29 @@ public:
 		o_y_array[1] = 4;
 
 
+		for (int i = 0; i < *(numRobots); i++){
+			detectedObstacle[i] = 0;
+		}
+		
+
+
 		cout << "CREATING ENVIRONMENT..." << "\tName: " << name << "\t# of Robots: " << *(_numRobots) << "\t# of Obstacles: " << *(_numObstacles) << endl;
-		SC_CTHREAD(run1, clock.pos());
 		SC_METHOD(prc_environment);
 		sensitive << clock.pos();
+		dont_initialize();
+		SC_METHOD(prc_robot0_obstacle_detected);
+		sensitive << detectedObstacle[0].posedge_event();
+		dont_initialize();
+		SC_METHOD(prc_robot1_obstacle_detected);
+		sensitive << detectedObstacle[1].posedge_event();
+		dont_initialize();
+		SC_METHOD(prc_print_environment);
+		sensitive << clock.pos();
+		dont_initialize();
+		
 
 	}
 	
-	void run1(){
-		/*e_status_port[0].write(1);
-		e_status_port[1].write(1);
-		e_status_port[2].write(1);*/
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~1st CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~ " << endl;
-		//wait();
-
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~2nd CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~" << endl;
-		//wait();
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~3rd CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-		//wait();
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~4th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-		//wait();
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~5th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-		//wait();
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~6th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-		//wait();
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~7th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~" << endl;
-		//wait();
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~8th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-		//wait();
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~9th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-		//wait();
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~10th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-		//wait();
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~11th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-		//wait();
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~12th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-		//wait();
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~13th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-		//wait();
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~14th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-		//wait();
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~15th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-		//wait();
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~16th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-		//wait();
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~17th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-		//wait();
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~18th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-		//wait();
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~19th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-		//wait();
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~20th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-		//wait();
-
-
-	}
 private:
 	const T* _numRobots;
 	const T* _numObstacles;

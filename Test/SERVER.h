@@ -25,6 +25,7 @@ public:
 	sc_int<8>  server_array[S_NUM_ROBOTS][NUM_COLUMNS];	// SERVER DATA STRUCTURE 
 	
 	void prc_server();
+	void print_server();
 
 	SC_HAS_PROCESS(SERVER);
 
@@ -50,81 +51,15 @@ public:
 
 
 		cout << "CREATING SERVER..." << "\tName: " << name << "\t# of Robots: " << *(_numRobots) << endl;
-		SC_CTHREAD(run, clock.pos());
 		SC_METHOD(prc_server);
 		sensitive << clock.pos();
-		
+		dont_initialize();
+		SC_METHOD(print_server);
+		sensitive << clock.pos();
+		dont_initialize();
 	}
 	
 	
-
-
-	void run(){
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~1st CLOCK SERVER~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-		///*serverStatus_port[0].write(1);
-		//serverStatus_port[1].write(1);
-		//serverStatus_port[2].write(1);*/
-		//
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~2nd CLOCK SERVER~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<< endl;
-		//wait();
-		//
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~3rd CLOCK SERVER~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<< endl;
-		//wait();
-		//
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~4th CLOCK SERVER~~~~~~~~~~~~~~~~~~~~" << endl;
-		//wait();
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~5th CLOCK SERVER~~~~~~~~~~~~~~~~~~~~" << endl;
-		//wait();
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~6th CLOCK SERVER~~~~~~~~~~~~~~~~~~~~ "<< endl;
-		//wait();
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~7th CLOCK SERVER~~~~~~~~~~~~~~~~~~~~ "<< endl;
-		//wait();
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~8th CLOCK SERVER~~~~~~~~~~~~~~~~~~~~ "<< endl;
-		//wait();
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~9th CLOCK SERVER~~~~~~~~~~~~~~~~~~~~ "<< endl;
-		//wait();
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~10th CLOCK SERVER~~~~~~~~~~~~~~~~~~~~ "<< endl;
-		//wait();
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~11th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-		//wait();
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~12th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-		//wait();
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~13th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-		//wait();
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~14th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-		//wait();
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~15th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-		//wait();
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~16th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-		//wait();
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~17th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-		//wait();
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~18th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-		//wait();
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~19th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-		//wait();
-
-		//cout << endl << "~~~~~~~~~~~~~~~~~~~~20th CLOCK ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-		//wait();
-
-
-		
-	}
 
 private:
 	const T* _numRobots;

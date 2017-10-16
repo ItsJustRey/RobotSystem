@@ -17,12 +17,17 @@ public:
 	
 
 	void prc_robot();
+	void print_robot();
 
 	SC_HAS_PROCESS(ROBOT);
 	ROBOT(sc_module_name name, const T* id, const T* speed, T* grid, T* x, T* y) : sc_module(name), _id(id), _speed(speed), _grid(grid), _x(x), _y(y)
 	{
 		SC_METHOD(prc_robot);
 		sensitive << clock.pos();
+		dont_initialize();
+		SC_METHOD(print_robot);
+		sensitive << clock.pos();
+		dont_initialize();
 		cout << "CREATING ROBOT..." << "\tName: " << name << "\tROBOT ID: " << *(_id) << "\tSpeed: " << *(_speed) << "\Grid: " << *(_grid) << "\tX: " << *(_x) << "\tY: " << *(_y) << endl;
 		
 	}

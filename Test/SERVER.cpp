@@ -2,12 +2,6 @@
 typedef int server_T;
 void SERVER<server_T>::prc_server(){
 
-	//UPDATE DATA STRUCTURE
-	//for (int i = 0; i < *(_numRobots); i++){
-	//	//r_index_array[i] = r_id_port[i].read();
-	//	//r_status_array[i] = r_status_port[i].read();
-	//}
-
 	//// FOR ALL ROBOTS
 	for (int thisRobot = 0; thisRobot < *(_numRobots); thisRobot++){
 
@@ -34,24 +28,18 @@ void SERVER<server_T>::prc_server(){
 					}
 					else{
 						gridUpdate_port[thisRobot].write(0);
-						//break;
 					}
-
-
 				}
 			}
 		}
 		else{
 			gridUpdate_port[thisRobot].write(0);
 		}
-
-		
-
-		
 	}
+}
 
 
-
+void SERVER<server_T>::print_server(){
 
 	cout << endl << "~~~~~~~~~~~~~Server~~~~~~~~~~~~~~" << endl;
 	cout << "=================================" << endl;
@@ -70,4 +58,5 @@ void SERVER<server_T>::prc_server(){
 		cout << endl;
 	}
 	cout << "=================================" << endl;
+
 }
