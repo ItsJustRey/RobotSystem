@@ -31,8 +31,9 @@ public:
 	
 	sc_in<bool>				s_start_robot_port[S_NUM_ROBOTS];	// WRITE TO THIS SIGNAL (CONNECTED TO SERVER from MAIN)
 
+	sc_out<sc_int<8> >e_cg_array_port[S_NUM_ROBOTS];
+	sc_out<sc_int<8> >e_ng_array_port[S_NUM_ROBOTS];
 
-	//sc_fifo <sc_int<8> > robot0_y_path("robot0Path", 8);
 
 
 
@@ -94,8 +95,7 @@ public:
 		dont_initialize();
 
 		SC_CTHREAD(prc_robot_path,clock.pos());
-		//dont_initialize();
-
+		
 		SC_METHOD(prc_robot0_start);
 		sensitive << s_start_robot_port[0].pos();
 		dont_initialize();

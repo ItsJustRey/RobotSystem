@@ -14,39 +14,39 @@ void ENVIRONMENT<environment_T>::prc_environment(){
 			if (gridUpdate_port[i].read() == 1 && checkingBoundary[i] == true)
 			{
 				checkingBoundary[i] = false;		// finally received signal 
-				r_cg_array[i] += 1;					// UPDATE GRIDS
-				r_ng_array[i] += 1;					// UPDATE GRIDS
+				r_cg_array[i] = e_cg_array_port[i].read();					// UPDATE GRIDS
+				r_ng_array[i] = e_ng_array_port[i].read();				// UPDATE GRIDS
 				r_x_array[i] = -1;					// START FROM BEGINNING OF GRID
 			}
 			else{
-				r_cg_array[i] = r_cg_array[i];		// DONT UPDATE GRIDS
+				r_cg_array[i] = e_cg_array_port[i].read();		// DONT UPDATE GRIDS
 				r_ng_array[i] = r_ng_array[i];		// DONT UPDATE GRIDS
 				r_x_array[i] = r_x_array[i];		// DONT UPDATE GRIDS
 			}
 
 		
 		
-			// CHECK IF ROBOT IS ABOUT TO CROSS BOUNDARY
-			// Server(in) <-- ROBOT(inout) <-- Environment(out)
-			if ((r_x_array[i] + r_speed_array[i]) >= GRID_WIDTH){
+				// CHECK IF ROBOT IS ABOUT TO CROSS BOUNDARY
+				// Server(in) <-- ROBOT(inout) <-- Environment(out)
+				if ((r_x_array[i] + r_speed_array[i]) >= GRID_WIDTH){
 
-				// CROSSING
-				checkingBoundary[i] = true;
-				boundary_port[i].write(1);		
+					// CROSSING
+					checkingBoundary[i] = true;
+					boundary_port[i].write(1);		
 
-			}
-			else{
-				// NOT CROSSING
-				boundary_port[i].write(0);
-
-				// ONLY UPDATE  X/Y WHEN ROBOT DOES NOT DETECT OBSTACLES
-				if (detectedObstacle[i] == false){
-					r_x_array[i] = r_x_array[i] + r_speed_array[i];
 				}
 				else{
-					r_x_array[i] = r_x_array[i];
+					// NOT CROSSING
+					boundary_port[i].write(0);
+
+					// ONLY UPDATE  X/Y WHEN ROBOT DOES NOT DETECT OBSTACLES
+					if (detectedObstacle[i] == false){
+						r_x_array[i] = r_x_array[i] + r_speed_array[i];
+					}
+					else{
+						r_x_array[i] = r_x_array[i];
+					}
 				}
-			}
 
 
 			// CHECK IF ROBOT IS NEAR OBSTACLE
@@ -99,7 +99,7 @@ void ENVIRONMENT<environment_T>::prc_robot1_obstacle_detected(){
 
 
 }
-
+void
 
 void ENVIRONMENT<environment_T>::prc_print_environment(){
 

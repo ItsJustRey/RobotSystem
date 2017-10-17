@@ -46,6 +46,9 @@ public:
 	sc_signal<bool> checkingBoundary[E_NUM_ROBOTS];		// USED TO HOLD THE ROBOT WHILE CHECKING BOUNDARY
 	sc_signal<bool> detectedObstacle[E_NUM_ROBOTS];		// USED TO HOLD THE ROBOT WHILE CHECKING OBSTACLE
 
+	sc_in<sc_int<8> >e_cg_array_port[E_NUM_ROBOTS];
+	sc_in<sc_int<8> >e_ng_array_port[E_NUM_ROBOTS];
+
 	void prc_environment();
 	void prc_robot0_obstacle_detected();
 	void prc_robot1_obstacle_detected();
@@ -129,6 +132,8 @@ public:
 		SC_METHOD(prc_print_environment);
 		sensitive << clock.pos();
 		dont_initialize();
+
+		SC_CTHREAD(prc_robot_path, clock.pos());
 		
 
 	}

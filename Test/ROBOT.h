@@ -16,6 +16,8 @@ public:
 	
 	sc_inout<bool>	robot_start_moving_port;		// Server(out)-- >ROBOT(inout)--> ENVIRONMENT(in)
 
+	sc_inout<sc_int<8> >e_cg_array_port;
+	sc_inout<sc_int<8> >e_ng_array_port;
 
 	void prc_robot();
 	void print_robot();

@@ -35,6 +35,9 @@ void ROBOT<robot_T> ::prc_robot(){
 		else{
 			boundary_port.write(0);
 		}
+
+		e_cg_array_port.write(e_cg_array_port.read());
+		e_ng_array_port.write(e_ng_array_port.read());
 	}
 }
 
