@@ -5,68 +5,70 @@ void ENVIRONMENT<environment_T>::prc_environment(){
 	// UPDATE EACH ROBOT
 	for (int i = 0; i < *(_numRobots); i++){
 		
-		// CHECK IF SERVER ALLOWED ROBOT TO MOVE
-		// Server(out)-- >ROBOT(inout)--> ENVIRONMENT(in)
-		if (gridUpdate_port[i].read() == 1 && checkingBoundary[i] == true)
-		{
-			checkingBoundary[i] = false;		// finally received signal 
-			r_cg_array[i] += 1;					// UPDATE GRIDS
-			r_ng_array[i] += 1;					// UPDATE GRIDS
-			r_x_array[i] = -1;					// START FROM BEGINNING OF GRID
-		}
-		else{
-			r_cg_array[i] = r_cg_array[i];		// DONT UPDATE GRIDS
-			r_ng_array[i] = r_ng_array[i];		// DONT UPDATE GRIDS
-			r_x_array[i] = r_x_array[i];		// DONT UPDATE GRIDS
-		}
+
+		if (robot_start_moving_port[i].read() == 1){
+
+
+			// CHECK IF SERVER ALLOWED ROBOT TO MOVE
+			// Server(out)-- >ROBOT(inout)--> ENVIRONMENT(in)
+			if (gridUpdate_port[i].read() == 1 && checkingBoundary[i] == true)
+			{
+				checkingBoundary[i] = false;		// finally received signal 
+				r_cg_array[i] += 1;					// UPDATE GRIDS
+				r_ng_array[i] += 1;					// UPDATE GRIDS
+				r_x_array[i] = -1;					// START FROM BEGINNING OF GRID
+			}
+			else{
+				r_cg_array[i] = r_cg_array[i];		// DONT UPDATE GRIDS
+				r_ng_array[i] = r_ng_array[i];		// DONT UPDATE GRIDS
+				r_x_array[i] = r_x_array[i];		// DONT UPDATE GRIDS
+			}
 
 		
 		
-		// CHECK IF ROBOT IS ABOUT TO CROSS BOUNDARY
-		// Server(in) <-- ROBOT(inout) <-- Environment(out)
-		if ((r_x_array[i] + r_speed_array[i]) >= GRID_WIDTH){
+			// CHECK IF ROBOT IS ABOUT TO CROSS BOUNDARY
+			// Server(in) <-- ROBOT(inout) <-- Environment(out)
+			if ((r_x_array[i] + r_speed_array[i]) >= GRID_WIDTH){
 
-			// CROSSING
-			checkingBoundary[i] = true;
-			boundary_port[i].write(1);		
+				// CROSSING
+				checkingBoundary[i] = true;
+				boundary_port[i].write(1);		
 
-		}
-		else{
-			// NOT CROSSING
-			boundary_port[i].write(0);
-
-			// ONLY UPDATE  X/Y WHEN ROBOT DOES NOT DETECT OBSTACLES
-			if (detectedObstacle[i] == false){
-				r_x_array[i] = r_x_array[i] + r_speed_array[i];
 			}
 			else{
-				r_x_array[i] = r_x_array[i];
+				// NOT CROSSING
+				boundary_port[i].write(0);
+
+				// ONLY UPDATE  X/Y WHEN ROBOT DOES NOT DETECT OBSTACLES
+				if (detectedObstacle[i] == false){
+					r_x_array[i] = r_x_array[i] + r_speed_array[i];
+				}
+				else{
+					r_x_array[i] = r_x_array[i];
+				}
+			}
+
+
+			// CHECK IF ROBOT IS NEAR OBSTACLE
+			// Server(in) <-- ROBOT(inout) <-- Environment(out)
+			for (int j = 0; j < *(_numObstacles); j++){
+
+				// DETECTED OBSTACLE
+				if (r_cg_array[i] == o_cg_array[j]
+					&& ((r_x_array[i] + (r_speed_array[i])) >= o_x_array[j])
+					&& (r_y_array[i] == o_y_array[j])){
+
+					cout << "ROBOT " << i << " DETECTED OBSTACLE " << j << endl;
+					detectedObstacle[i] = true;
+					obstacle_port[i].write(1);
+				}
+
+				// DID NOT DETECT OBSTACLE
+				else{
+					obstacle_port[i].write(0);
+				}
 			}
 		}
-
-
-		// CHECK IF ROBOT IS NEAR OBSTACLE
-		// Server(in) <-- ROBOT(inout) <-- Environment(out)
-		for (int j = 0; j < *(_numObstacles); j++){
-
-			// DETECTED OBSTACLE
-			if (r_cg_array[i] == o_cg_array[j]
-				&& ((r_x_array[i] + (r_speed_array[i])) >= o_x_array[j])
-				&& (r_y_array[i] == o_y_array[j])){
-
-				cout << "ROBOT " << i << " DETECTED OBSTACLE " << j << endl;
-				detectedObstacle[i] = true;
-				obstacle_port[i].write(1);
-			}
-
-			// DID NOT DETECT OBSTACLE
-			else{
-				obstacle_port[i].write(0);
-			}
-
-		}
-
-
 	}
 	
 

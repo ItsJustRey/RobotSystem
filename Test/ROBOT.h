@@ -14,7 +14,8 @@ public:
 	sc_inout<bool>obstacle_port;		// Server(in) <-- ROBOT(inout) <-- Environment(out)
 	sc_inout<bool>boundary_port;		// Server(in) <-- ROBOT(inout) <-- Environment(out)
 	
-	
+	sc_inout<bool>	robot_start_moving_port;		// Server(out)-- >ROBOT(inout)--> ENVIRONMENT(in)
+
 
 	void prc_robot();
 	void print_robot();

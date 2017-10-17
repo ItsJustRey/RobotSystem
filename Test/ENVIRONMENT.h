@@ -7,10 +7,10 @@ const int ENVIRONMENT_MAX_ROBOTS = 5;
 const int ENVIRONMENT_MAX_OBSTACLES = 5;
 const int ROBOT_NUM_COLUMNS = 8;
 const int OBSTACLE_NUM_COLUMNS = 5;
-const int E_NUM_ROBOTS = 2;
+const int E_NUM_ROBOTS = 3;
 const int E_NUM_OBSTACLES = 2;
-const int GRID_WIDTH = 10;
-const int GRID_HEIGHT = 10;
+const int GRID_WIDTH = 5;
+const int GRID_HEIGHT = 5;
 
 template <class T> class ENVIRONMENT : public sc_module{
 public:
@@ -20,6 +20,10 @@ public:
 	sc_in<bool> gridUpdate_port[E_NUM_ROBOTS];							// Server(out)-- >ROBOT(inout)--> ENVIRONMENT(in)
 	sc_out<bool>obstacle_port[E_NUM_ROBOTS];							// Server(in) <-- ROBOT(inout) <-- Environment(out)
 	sc_out<bool> boundary_port[E_NUM_ROBOTS];							// Server(in) <-- ROBOT(inout) <-- Environment(out)
+
+	sc_in<bool>	robot_start_moving_port[E_NUM_ROBOTS];					// Server(out)-- >ROBOT(inout)--> ENVIRONMENT(in)
+
+
 
 	sc_in <sc_uint<8> > r_id_port[E_NUM_ROBOTS];						// USED TO IDENTIFY EACH ROBOT
 
@@ -39,8 +43,8 @@ public:
 	sc_int<8>	o_y_array[E_NUM_OBSTACLES];								// COLUMN FOR EACH OBSTACLE's Y coordinate within Grid
 	sc_int<8>  e_obstacle_array[E_NUM_OBSTACLES][OBSTACLE_NUM_COLUMNS];	// ENVIRONMENT DATA STRUCTURE (OBSTACLE)
 
-	sc_signal<bool> checkingBoundary[E_NUM_ROBOTS];	// USED TO HOLD THE ROBOT WHILE CHECKING BOUNDARY
-	sc_signal<bool> detectedObstacle[E_NUM_ROBOTS];	// USED TO HOLD THE ROBOT WHILE CHECKING OBSTACLE
+	sc_signal<bool> checkingBoundary[E_NUM_ROBOTS];		// USED TO HOLD THE ROBOT WHILE CHECKING BOUNDARY
+	sc_signal<bool> detectedObstacle[E_NUM_ROBOTS];		// USED TO HOLD THE ROBOT WHILE CHECKING OBSTACLE
 
 	void prc_environment();
 	void prc_robot0_obstacle_detected();
@@ -49,8 +53,12 @@ public:
 	
 
 	SC_HAS_PROCESS(ENVIRONMENT);
-	ENVIRONMENT(sc_module_name name, const T* numRobots, const T* numObstacles, const T* r0_id, const T* r0_speed, const T* r0_grid, const T* r0_x, const T* r0_y, const T* r1_id, const T* r1_speed, const T* r1_grid, const T* r1_x, const T* r1_y) :
-		sc_module(name), _numRobots(numRobots), _numObstacles(numObstacles), _r0_id(r0_id), _r0_speed(r0_speed), _r0_grid(r0_grid), _r0_x(r0_x), _r0_y(r0_y),  _r1_id(r1_id), _r1_speed(r1_speed), _r1_grid(r1_grid), _r1_x(r1_x), _r1_y(r1_y)
+	ENVIRONMENT(sc_module_name name, const T* numRobots, const T* numObstacles, const T* r0_id, const T* r0_speed, const T* r0_grid, const T* r0_x, const T* r0_y, 
+																				const T* r1_id, const T* r1_speed, const T* r1_grid, const T* r1_x, const T* r1_y, 
+																				const T* r2_id, const T* r2_speed, const T* r2_grid, const T* r2_x, const T* r2_y) :
+				sc_module(name), _numRobots(numRobots), _numObstacles(numObstacles), _r0_id(r0_id), _r0_speed(r0_speed), _r0_grid(r0_grid), _r0_x(r0_x), _r0_y(r0_y), 
+																					_r1_id(r1_id), _r1_speed(r1_speed), _r1_grid(r1_grid), _r1_x(r1_x), _r1_y(r1_y), 
+																					_r2_id(r2_id), _r2_speed(r2_speed), _r2_grid(r2_grid), _r2_x(r2_x), _r2_y(r2_y)
 	{
 
 		r_index_array[*(r0_id)] = *(r0_id);
@@ -69,6 +77,16 @@ public:
 		r_status_array[*(r1_id)] = 1;
 		r_speed_array[*(r1_id)] = *(r1_speed);
 
+		r_index_array[*(r2_id)] = *(r2_id);
+		r_cg_array[*(r2_id)] = *(r2_grid);
+		r_ng_array[*(r2_id)] = *(r2_grid)+1;
+		r_x_array[*(r2_id)] = *(r2_x);
+		r_y_array[*(r2_id)] = *(r2_y);
+		r_status_array[*(r2_id)] = 1;
+		r_speed_array[*(r2_id)] = *(r2_speed);
+
+
+
 		for (int i = 0; i < *(_numRobots); i++){
 			e_robot_array[i][0] = r_index_array[i];
 			e_robot_array[i][1] = r_cg_array[i];
@@ -80,13 +98,13 @@ public:
 		}
 		
 		o_index_array[0] = 0;
-		o_cg_array[0] = 0;
+		o_cg_array[0] = 10;
 		o_ng_array[0] = 0;
 		o_x_array[0] = 3;
 		o_y_array[0] = 0;
 
 		o_index_array[1] = 1;
-		o_cg_array[1] = 2;
+		o_cg_array[1] = 10;
 		o_ng_array[1] = 2;
 		o_x_array[1] = 4;
 		o_y_array[1] = 4;
@@ -130,4 +148,12 @@ private:
 	const T* _r1_grid;
 	const T* _r1_x;
 	const T* _r1_y;
+
+
+	const T* _r2_id;
+	const T* _r2_speed;
+	const T* _r2_grid;
+	const T* _r2_x;
+	const T* _r2_y;
+
 };
