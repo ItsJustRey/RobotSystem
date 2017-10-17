@@ -50,20 +50,20 @@ public:
 	void prc_robot0_obstacle_detected();
 	void prc_robot1_obstacle_detected();
 	void prc_print_environment();
-
+	
 
 	SC_HAS_PROCESS(ENVIRONMENT);
-	ENVIRONMENT(sc_module_name name, const T* numRobots, const T* numObstacles, const T* r0_id, const T* r0_speed, const T* r0_grid, const T* r0_x, const T* r0_y,
-		const T* r1_id, const T* r1_speed, const T* r1_grid, const T* r1_x, const T* r1_y,
-		const T* r2_id, const T* r2_speed, const T* r2_grid, const T* r2_x, const T* r2_y) :
-		sc_module(name), _numRobots(numRobots), _numObstacles(numObstacles), _r0_id(r0_id), _r0_speed(r0_speed), _r0_grid(r0_grid), _r0_x(r0_x), _r0_y(r0_y),
-		_r1_id(r1_id), _r1_speed(r1_speed), _r1_grid(r1_grid), _r1_x(r1_x), _r1_y(r1_y),
-		_r2_id(r2_id), _r2_speed(r2_speed), _r2_grid(r2_grid), _r2_x(r2_x), _r2_y(r2_y)
+	ENVIRONMENT(sc_module_name name, const T* numRobots, const T* numObstacles, const T* r0_id, const T* r0_speed, const T* r0_grid, const T* r0_x, const T* r0_y, 
+																				const T* r1_id, const T* r1_speed, const T* r1_grid, const T* r1_x, const T* r1_y, 
+																				const T* r2_id, const T* r2_speed, const T* r2_grid, const T* r2_x, const T* r2_y) :
+				sc_module(name), _numRobots(numRobots), _numObstacles(numObstacles), _r0_id(r0_id), _r0_speed(r0_speed), _r0_grid(r0_grid), _r0_x(r0_x), _r0_y(r0_y), 
+																					_r1_id(r1_id), _r1_speed(r1_speed), _r1_grid(r1_grid), _r1_x(r1_x), _r1_y(r1_y), 
+																					_r2_id(r2_id), _r2_speed(r2_speed), _r2_grid(r2_grid), _r2_x(r2_x), _r2_y(r2_y)
 	{
 
 		r_index_array[*(r0_id)] = *(r0_id);
 		r_cg_array[*(r0_id)] = *(r0_grid);
-		r_ng_array[*(r0_id)] = *(r0_grid)+1;
+		r_ng_array[*(r0_id)] = *(r0_grid) + 1;
 		r_x_array[*(r0_id)] = *(r0_x);
 		r_y_array[*(r0_id)] = *(r0_y);
 		r_status_array[*(r0_id)] = 1;
@@ -71,7 +71,7 @@ public:
 
 		r_index_array[*(r1_id)] = *(r1_id);
 		r_cg_array[*(r1_id)] = *(r1_grid);
-		r_ng_array[*(r1_id)] = *(r1_grid)+1;
+		r_ng_array[*(r1_id)] = *(r1_grid) + 1;
 		r_x_array[*(r1_id)] = *(r1_x);
 		r_y_array[*(r1_id)] = *(r1_y);
 		r_status_array[*(r1_id)] = 1;
@@ -96,7 +96,7 @@ public:
 			e_robot_array[i][5] = r_status_array[i];
 			e_robot_array[i][6] = r_speed_array[i];
 		}
-
+		
 		o_index_array[0] = 0;
 		o_cg_array[0] = 10;
 		o_ng_array[0] = 0;
@@ -113,7 +113,7 @@ public:
 		for (int i = 0; i < *(numRobots); i++){
 			detectedObstacle[i] = 0;
 		}
-
+		
 
 
 		cout << "CREATING ENVIRONMENT..." << "\tName: " << name << "\t# of Robots: " << *(_numRobots) << "\t# of Obstacles: " << *(_numObstacles) << endl;
@@ -129,10 +129,10 @@ public:
 		SC_METHOD(prc_print_environment);
 		sensitive << clock.pos();
 		dont_initialize();
-
+		
 
 	}
-
+	
 private:
 	const T* _numRobots;
 	const T* _numObstacles;

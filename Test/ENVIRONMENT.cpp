@@ -4,7 +4,7 @@ void ENVIRONMENT<environment_T>::prc_environment(){
 
 	// UPDATE EACH ROBOT
 	for (int i = 0; i < *(_numRobots); i++){
-
+		
 
 		if (robot_start_moving_port[i].read() == 1){
 
@@ -24,15 +24,15 @@ void ENVIRONMENT<environment_T>::prc_environment(){
 				r_x_array[i] = r_x_array[i];		// DONT UPDATE GRIDS
 			}
 
-
-
+		
+		
 			// CHECK IF ROBOT IS ABOUT TO CROSS BOUNDARY
 			// Server(in) <-- ROBOT(inout) <-- Environment(out)
 			if ((r_x_array[i] + r_speed_array[i]) >= GRID_WIDTH){
 
 				// CROSSING
 				checkingBoundary[i] = true;
-				boundary_port[i].write(1);
+				boundary_port[i].write(1);		
 
 			}
 			else{
@@ -70,7 +70,7 @@ void ENVIRONMENT<environment_T>::prc_environment(){
 			}
 		}
 	}
-
+	
 
 }
 

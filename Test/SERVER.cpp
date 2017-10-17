@@ -2,8 +2,8 @@
 typedef int server_T;
 void SERVER<server_T>::prc_server(){
 
-
-
+	
+	
 	//// FOR ALL ROBOTS
 	for (int thisRobot = 0; thisRobot < *(_numRobots); thisRobot++){
 
@@ -15,7 +15,7 @@ void SERVER<server_T>::prc_server(){
 		// ROBOT STOPPED (BECAUSE OF BOUNDARY)
 		// Server(in) <-- ROBOT(inout) <-- Environment(out)
 		if (boundary_port[thisRobot].read() == 1 && checkingBoundary[thisRobot] == true){
-
+			
 			// CHECK ALL OTHER ROBOTS CURRENT GRID
 			for (int otherRobot = 0; otherRobot < *(_numRobots); otherRobot++){
 
@@ -30,13 +30,13 @@ void SERVER<server_T>::prc_server(){
 					}
 					else{
 						gridUpdate_port[thisRobot].write(0);
-
+						
 					}
 				}
 			}
 			checkingBoundary[thisRobot] = false;
 
-
+			
 		}
 		else{
 			gridUpdate_port[thisRobot].write(0);
@@ -48,15 +48,15 @@ void SERVER<server_T>::prc_server(){
 			cout << "INCREMENTING CG NG OF ROBOT " << thisRobot << endl;
 
 			/*if (thisRobot == 0){
-			r_cg_array[thisRobot] = robot0_x_path.read();
+				r_cg_array[thisRobot] = robot0_x_path.read();
 			}*/
 
-			r_cg_array[thisRobot] += 1;				//Increments current grid of robot in server
+			r_cg_array[thisRobot] +=1;				//Increments current grid of robot in server
 			r_ng_array[thisRobot] += 1;				//Increments next grid of robot in server
 		}
+		
 
-
-
+		
 	}
 }
 
@@ -88,7 +88,7 @@ void SERVER<server_T>::prc_robot2_start(){
 	cout << "ROBOT 2 HAS ARRIVED " << sc_time_stamp() << endl;
 	cout << "ROBOT 2 HAS ARRIVED " << sc_time_stamp() << endl;
 }
-//
+	//
 
 
 //void SERVER<server_T>::prc_robot_path(){

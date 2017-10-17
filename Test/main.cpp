@@ -13,13 +13,13 @@ int sc_main(int argc, char *argv[]){
 	sc_signal<sc_uint<8> >		location_sig;
 
 	sc_signal<sc_uint<8> >		r_id_array_sig[NUM_ROBOTS];				// ROBOT -> SERVER  
-	// ROBOT -> ENVIRONMENT
+																		// ROBOT -> ENVIRONMENT
 
 	sc_signal<bool>				r_status_array_sig[NUM_ROBOTS];			// ROBOT -> SERVER
-	// ROBOT -> ENVIRONMENT
+																		// ROBOT -> ENVIRONMENT
 
 	sc_signal<bool>				s_status_array_sig[NUM_ROBOTS];			// SERVER -> ROBOT
-
+	
 	sc_signal<bool>				e_status_array_sig[NUM_ROBOTS];			// ENVIRONMENT -> ROBOT
 
 	sc_signal<bool>             boundary_sig[NUM_ROBOTS];
@@ -49,7 +49,7 @@ int sc_main(int argc, char *argv[]){
 	robot0.gridUpdate_port(gridUpdate_sig[r0_id]);
 	robot0.obstacle_port(obstacle_sig[r0_id]);
 	robot0.robot_start_moving_port(robot_start_moving_sig[r0_id]);
-
+	
 	// CREATE ROBOT 1
 	typedef int robot_T;
 	const robot_T r1_id = 1;
@@ -89,7 +89,7 @@ int sc_main(int argc, char *argv[]){
 	const server_T server_numRobots = NUM_ROBOTS;
 	SERVER<server_T>	server1("server1", &server_numRobots, &r0_id, &r0_speed, &r0_grid, &r1_id, &r1_speed, &r1_grid, &r2_id, &r2_speed, &r2_grid);
 	server1.clock(clk_sig);
-
+	
 	for (int i = 0; i < NUM_ROBOTS; i++){
 		server1.r_id_port[i](r_id_array_sig[i]);
 		server1.boundary_port[i](boundary_sig[i]);
@@ -107,9 +107,9 @@ int sc_main(int argc, char *argv[]){
 	const environment_T environment_numRobots = NUM_ROBOTS;
 	const environment_T numObstacles = NUM_OBSTACLES;
 	//ROBOT<robot_T> robots[NUM_ROBOTS];
-	ENVIRONMENT<environment_T>	environment1("environment", &environment_numRobots, &numObstacles, &r0_id, &r0_speed, &r0_grid, &r0_x, &r0_y,
-		&r1_id, &r1_speed, &r1_grid, &r1_x, &r1_y,
-		&r2_id, &r2_speed, &r2_grid, &r2_x, &r2_y);
+	ENVIRONMENT<environment_T>	environment1("environment", &environment_numRobots, &numObstacles, &r0_id, &r0_speed, &r0_grid, &r0_x, &r0_y, 
+																									&r1_id, &r1_speed, &r1_grid, &r1_x, &r1_y, 
+																									&r2_id, &r2_speed, &r2_grid, &r2_x, &r2_y);
 	environment1.clock(clk_sig);
 	for (int i = 0; i < NUM_ROBOTS; i++){
 		environment1.r_id_port[i](r_id_array_sig[i]);
@@ -158,7 +158,7 @@ int sc_main(int argc, char *argv[]){
 	// CONTUINUE UNTIL 20 SECONDS
 	sc_start(10, SC_SEC);
 
-
+	
 
 	return 0;
 }
