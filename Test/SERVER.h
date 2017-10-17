@@ -42,16 +42,14 @@ public:
 	void prc_robot0_start();
 	void prc_robot1_start();
 	void prc_robot2_start();
+	void prc_robot_path();
 	void print_server();
 
 	SC_HAS_PROCESS(SERVER);
 
-	sc_fifo <int> robot0_x_path;
-	sc_fifo <int> robot1_x_path;
-	sc_fifo <int> robot2_x_path;
-	sc_fifo <int> robot0_y_path;
-	sc_fifo <int> robot1_y_path;
-	sc_fifo <int> robot2_y_path;
+	sc_fifo <int> robot0_n_path;
+	sc_fifo <int> robot1_n_path;
+	sc_fifo <int> robot2_n_path;
 
 
 	SERVER(sc_module_name name, const T* numRobots, const T* r0_id, const T* r0_speed, const T* r0_grid,
@@ -85,18 +83,18 @@ public:
 			server_array[i][3] = r_status_array[i];
 		}
 
-		sc_fifo <int> robot0_x_path(8);
-		sc_fifo <int> robot1_x_path(8);
-		sc_fifo <int> robot2_x_path(8);
-		sc_fifo <int> robot0_y_path(8);
-		sc_fifo <int> robot1_y_path(8);
-		sc_fifo <int> robot2_y_path(8);
-
+		sc_fifo <int> robot0_n_path(8);
+		sc_fifo <int> robot1_n_path(8);
+		sc_fifo <int> robot2_n_path(8);
+	
 
 		cout << "CREATING SERVER..." << "\tName: " << name << "\t# of Robots: " << *(_numRobots) << endl;
 		SC_METHOD(prc_server);
 		sensitive << clock.pos();
 		dont_initialize();
+
+		SC_CTHREAD(prc_robot_path,clock.pos());
+		//dont_initialize();
 
 		SC_METHOD(prc_robot0_start);
 		sensitive << s_start_robot_port[0].pos();

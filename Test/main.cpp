@@ -8,6 +8,9 @@ const int NUM_OBSTACLES = 2;
 
 int sc_main(int argc, char *argv[]){
 
+	sc_core::sc_report_handler::set_actions("/IEEE_Std_1666/deprecated",
+		sc_core::SC_DO_NOTHING);
+
 	// DEFINE SIGNALS
 	sc_clock					clk_sig("clk", 1, SC_SEC);
 	sc_signal<sc_uint<8> >		location_sig;
@@ -39,7 +42,7 @@ int sc_main(int argc, char *argv[]){
 	typedef int robot_T;
 	const robot_T r0_id = 0;
 	const robot_T r0_speed = 1;
-	robot_T r0_grid = 0;
+	robot_T r0_grid = 2;
 	robot_T r0_x = 0;
 	robot_T r0_y = 0;
 	ROBOT<robot_T>	robot0("robot0", &r0_id, &r0_speed, &r0_grid, &r0_x, &r0_y);
@@ -54,7 +57,7 @@ int sc_main(int argc, char *argv[]){
 	typedef int robot_T;
 	const robot_T r1_id = 1;
 	const robot_T r1_speed = 1;
-	robot_T r1_grid = 2;
+	robot_T r1_grid = 18;
 	robot_T r1_x = 0;
 	robot_T r1_y = 4;
 	ROBOT<robot_T>	robot1("robot1", &r1_id, &r1_speed, &r1_grid, &r1_x, &r1_y);
@@ -70,7 +73,7 @@ int sc_main(int argc, char *argv[]){
 	typedef int robot_T;
 	const robot_T r2_id = 2;
 	const robot_T r2_speed = 1;
-	robot_T r2_grid = 5;
+	robot_T r2_grid = 21;
 	robot_T r2_x = 0;
 	robot_T r2_y = 0;
 	ROBOT<robot_T>	robot2("robot2", &r2_id, &r2_speed, &r2_grid, &r2_x, &r2_y);
@@ -123,9 +126,7 @@ int sc_main(int argc, char *argv[]){
 
 
 
-	//double robot0_start_time = 0;
-	//double robot1_start_time = 5;
-	//double robot2_start_time = 10;
+	
 
 	// START AT 0 seconds
 	s_start_robot_sig[0].write(1);
@@ -137,7 +138,7 @@ int sc_main(int argc, char *argv[]){
 
 
 	// START AT 5 seconds
-	sc_start(3, SC_SEC);
+	sc_start(10, SC_SEC);
 	s_start_robot_sig[1].write(1);
 	cout << "HELP" << sc_time_stamp() << endl;
 	cout << "HELP" << sc_time_stamp() << endl;
@@ -156,7 +157,7 @@ int sc_main(int argc, char *argv[]){
 	cout << "HELP" << sc_time_stamp() << endl;
 
 	// CONTUINUE UNTIL 20 SECONDS
-	sc_start(10, SC_SEC);
+	sc_start(65, SC_SEC);
 
 	
 
