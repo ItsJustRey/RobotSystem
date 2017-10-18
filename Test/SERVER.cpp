@@ -58,8 +58,8 @@ void SERVER<server_T>::prc_server(){
 			{
 				r_ng_array[thisRobot] = 1*r_cg_array[thisRobot];	//Sets the next grid to the current grid to indicate robot has stopped
 				robot_start_moving_port[0].write(0);				//Stop the robot
-				e_ng_array_port[thisRobot].write(r_cg_array[thisRobot]);
-				e_cg_array_port[thisRobot].write(r_ng_array[thisRobot]);
+				e_ng_array_port[thisRobot].write(r_ng_array[thisRobot]);
+				e_cg_array_port[thisRobot].write(r_cg_array[thisRobot]);
 
 			}
 ///Robot1

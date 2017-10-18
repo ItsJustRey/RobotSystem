@@ -57,12 +57,14 @@ public:
 	sc_int<8> robot1_grids[8];
 	sc_int<8> robot2_grids[8];
 
+	sc_int<1> IsX;
+	sc_int<1> IsY;
+
 
 	void prc_environment();
 	void prc_robot0_obstacle_detected();
 	void prc_robot1_obstacle_detected();
 	void prc_print_environment();
-	void prc_robot_path();
 
 	sc_fifo <int> robot0_n_path;
 	sc_fifo <int> robot1_n_path;
@@ -137,8 +139,7 @@ public:
 
 
 		cout << "CREATING ENVIRONMENT..." << "\tName: " << name << "\t# of Robots: " << *(_numRobots) << "\t# of Obstacles: " << *(_numObstacles) << endl;
-		//SC_CTHREAD(prc_robot_path, clock.pos());
-		SC_CTHREAD(prc_robot_path, clock.pos());
+		
 		SC_METHOD(prc_environment);
 		sensitive << clock.pos();
 		dont_initialize();

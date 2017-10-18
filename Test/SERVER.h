@@ -34,6 +34,8 @@ public:
 	sc_out<sc_int<8> >e_cg_array_port[S_NUM_ROBOTS];
 	sc_out<sc_int<8> >e_ng_array_port[S_NUM_ROBOTS];
 
+	
+
 
 
 
@@ -62,18 +64,18 @@ public:
 	{
 		r_index_array[*(r0_id)] = *(r0_id);
 		r_cg_array[*(r0_id)] = *(r0_grid);
-		r_ng_array[*(r0_id)] = *(r0_grid)+1;
+		r_ng_array[*(r0_id)] = 2;
 		r_status_array[*(r0_id)] = 1;
 
 		r_index_array[*(r1_id)] = *(r1_id);
 		r_cg_array[*(r1_id)] = *(r1_grid);
-		r_ng_array[*(r1_id)] = *(r1_grid)+1;
+		r_ng_array[*(r1_id)] = 34;
 		r_status_array[*(r1_id)] = 1;
 
 
 		r_index_array[*(r2_id)] = *(r2_id);
 		r_cg_array[*(r2_id)] = *(r2_grid);
-		r_ng_array[*(r2_id)] = *(r2_grid)+1;
+		r_ng_array[*(r2_id)] = 21;
 		r_status_array[*(r2_id)] = 1;
 
 
@@ -90,11 +92,16 @@ public:
 	
 
 		cout << "CREATING SERVER..." << "\tName: " << name << "\t# of Robots: " << *(_numRobots) << endl;
+
+		SC_CTHREAD(prc_robot_path, clock.pos());
+
 		SC_METHOD(prc_server);
 		sensitive << clock.pos();
 		dont_initialize();
 
-		SC_CTHREAD(prc_robot_path,clock.pos());
+		/*SC_METHOD(prc_robot_path);
+		sensitive << clock.pos();
+		dont_initialize();*/
 		
 		SC_METHOD(prc_robot0_start);
 		sensitive << s_start_robot_port[0].pos();
