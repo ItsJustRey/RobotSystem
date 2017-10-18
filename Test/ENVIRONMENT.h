@@ -5,7 +5,7 @@
 using namespace std;
 const int ENVIRONMENT_MAX_ROBOTS = 5;
 const int ENVIRONMENT_MAX_OBSTACLES = 5;
-const int ROBOT_NUM_COLUMNS = 8;
+const int ROBOT_NUM_COLUMNS = 9;
 const int OBSTACLE_NUM_COLUMNS = 5;
 const int E_NUM_ROBOTS = 3;
 const int E_NUM_OBSTACLES = 2;
@@ -49,11 +49,24 @@ public:
 	sc_in<sc_int<8> >e_cg_array_port[E_NUM_ROBOTS];
 	sc_in<sc_int<8> >e_ng_array_port[E_NUM_ROBOTS];
 
+	/*vector<int> robot0_grids;
+	vector<int> robot1_grids;
+	vector<int> robot2_grids;*/
+
+	sc_int<8> robot0_grids[8];
+	sc_int<8> robot1_grids[8];
+	sc_int<8> robot2_grids[8];
+
+
 	void prc_environment();
 	void prc_robot0_obstacle_detected();
 	void prc_robot1_obstacle_detected();
 	void prc_print_environment();
-	
+	void prc_robot_path();
+
+	sc_fifo <int> robot0_n_path;
+	sc_fifo <int> robot1_n_path;
+	sc_fifo <int> robot2_n_path;
 
 	SC_HAS_PROCESS(ENVIRONMENT);
 	ENVIRONMENT(sc_module_name name, const T* numRobots, const T* numObstacles, const T* r0_id, const T* r0_speed, const T* r0_grid, const T* r0_x, const T* r0_y, 
@@ -66,7 +79,7 @@ public:
 
 		r_index_array[*(r0_id)] = *(r0_id);
 		r_cg_array[*(r0_id)] = *(r0_grid);
-		r_ng_array[*(r0_id)] = *(r0_grid) + 1;
+		r_ng_array[*(r0_id)] = 2;
 		r_x_array[*(r0_id)] = *(r0_x);
 		r_y_array[*(r0_id)] = *(r0_y);
 		r_status_array[*(r0_id)] = 1;
@@ -74,7 +87,7 @@ public:
 
 		r_index_array[*(r1_id)] = *(r1_id);
 		r_cg_array[*(r1_id)] = *(r1_grid);
-		r_ng_array[*(r1_id)] = *(r1_grid) + 1;
+		r_ng_array[*(r1_id)] = 34;
 		r_x_array[*(r1_id)] = *(r1_x);
 		r_y_array[*(r1_id)] = *(r1_y);
 		r_status_array[*(r1_id)] = 1;
@@ -82,7 +95,7 @@ public:
 
 		r_index_array[*(r2_id)] = *(r2_id);
 		r_cg_array[*(r2_id)] = *(r2_grid);
-		r_ng_array[*(r2_id)] = *(r2_grid)+1;
+		r_ng_array[*(r2_id)] = 21;
 		r_x_array[*(r2_id)] = *(r2_x);
 		r_y_array[*(r2_id)] = *(r2_y);
 		r_status_array[*(r2_id)] = 1;
@@ -118,8 +131,14 @@ public:
 		}
 		
 
+		sc_fifo <int> robot0_n_path(8);
+		sc_fifo <int> robot1_n_path(8);
+		sc_fifo <int> robot2_n_path(8);
+
 
 		cout << "CREATING ENVIRONMENT..." << "\tName: " << name << "\t# of Robots: " << *(_numRobots) << "\t# of Obstacles: " << *(_numObstacles) << endl;
+		//SC_CTHREAD(prc_robot_path, clock.pos());
+		SC_CTHREAD(prc_robot_path, clock.pos());
 		SC_METHOD(prc_environment);
 		sensitive << clock.pos();
 		dont_initialize();
@@ -133,7 +152,7 @@ public:
 		sensitive << clock.pos();
 		dont_initialize();
 
-		SC_CTHREAD(prc_robot_path, clock.pos());
+	
 		
 
 	}
