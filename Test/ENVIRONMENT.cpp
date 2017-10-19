@@ -12,6 +12,22 @@ void ENVIRONMENT<environment_T>::prc_environment(){
 		if (robot_start_moving_port[i].read() == 1){
 
 
+			///////////////
+			// UPDATE ROBOT PATH
+			for (int j = 0; j < 6; j++)
+			{
+
+				if (i ==0)
+					block0_array[j] = block0_array_port_in[j].read();
+				else if (i ==1)
+					block1_array[j] = block1_array_port_in[j].read();
+				else if (i ==2)
+					block2_array[j] = block2_array_port_in[j].read();
+			}
+			///////////////////
+
+			
+
 			r_cg_array[i] = e_cg_array_port[i].read();
 			r_ng_array[i] = e_ng_array_port[i].read();
 
@@ -154,15 +170,99 @@ void ENVIRONMENT<environment_T>::prc_robot1_obstacle_detected(){
 
 }
 
+void ENVIRONMENT<environment_T>::prc_nodes(){
+	//sc_int<8> node0_priority[E_NUM_ROBOTS];
+	//sc_int<8> node4_priority[E_NUM_ROBOTS];
+	//sc_int<8> node20_priority[E_NUM_ROBOTS];
+	//sc_int<8> node22_priority[E_NUM_ROBOTS];
+	//sc_int<8> node24_priority[E_NUM_ROBOTS];
+	cout << " prc_nodes() " << endl;
+	// FOR EACH ROBOT
+	for (int i = 0; i < *(_numRobots); i++){
+
+		if (robot_start_moving_port[i].read() == 1){
+
+			// ITERATE THROUGH THIS ROBOTS PATH
+			for (int j = 0; j < 6; j++){
+
+				//ROBOT 0
+				if (i == 0){
+					
+				   if (block0_array[j] == 4){
+						node4_robots_in_path[0]=1;
+					}
+
+					else if (block0_array[j] == 20){
+						node20_robots_in_path[0] = 1;
+					}
+					else if (block0_array[j] == 22){
+						node22_robots_in_path[0] = 1;
+					}
+					else if (block0_array[j] == 24){
+						node24_robots_in_path[0] = 1;
+					}
+				}
+
+				//ROBOT 1
+				else if (i == 1){
+					
+
+					if (block1_array[j] == 4){
+						node4_robots_in_path[1] = 1;
+					}
+
+					else if (block1_array[j] == 20){
+						node20_robots_in_path[1] = 1;
+					}
+					else if (block1_array[j] == 22){
+						node22_robots_in_path[1] = 1;
+					}
+					else if (block1_array[j] == 24){
+						node24_robots_in_path[1] = 1;
+					}
+				}
+
+				//ROBOT 2
+				else if (i == 2){
+					
+
+					if (block2_array[j] == 4){
+						node4_robots_in_path[2] = 1;
+					}
+
+					else if (block2_array[j] == 20){
+						node20_robots_in_path[2] = 1;
+					}
+					else if (block2_array[j] == 22){
+						node22_robots_in_path[2] = 1;
+					}
+					else if (block2_array[j] == 24){
+						node24_robots_in_path[2] = 1;
+					}
+				}
+				
+			}
+
+		}
+
+	}
+		
+
+
+}
+	
+
+
+
 void ENVIRONMENT<environment_T>::prc_print_environment(){
 
 	//next_trigger(1.0,SC_SEC);
 	//next_trigger(1.0, SC_SEC);
 
-	cout << endl << "~~~~~~~~~~~~~~~~~~~~~~~ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-	cout << endl << "===========================ROBOT ARRAY===========================" << endl;
-	cout << "|RI\t|CG\t|NG\t|X\t|Y\t|BOUND\t|GRID\t|OBST\t|" << endl;
-	cout << "=================================================================" << endl;
+	cout << endl << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+	cout << endl << "===========================ROBOT ARRAY===================================" << endl;
+	cout << "|RI\t|CG\t|NG\t|X\t|Y\t|MOVING\t|BOUND\t|GRID\t|OBST\t|" << endl;
+	cout << "=========================================================================" << endl;
 	for (int i = 0; i < *(_numRobots); i++){
 
 		e_robot_array[i][0] = r_index_array[i];
@@ -170,9 +270,10 @@ void ENVIRONMENT<environment_T>::prc_print_environment(){
 		e_robot_array[i][2] = r_ng_array[i];
 		e_robot_array[i][3] = r_x_array[i];
 		e_robot_array[i][4] = r_y_array[i];
-		e_robot_array[i][5] = boundary_port[i].read();
-		e_robot_array[i][6] = gridUpdate_port[i].read();
-		e_robot_array[i][7] = detectedObstacle[i];
+		e_robot_array[i][5] = robot_start_moving_port[i].read();
+		e_robot_array[i][6] = boundary_port[i].read();
+		e_robot_array[i][7] = gridUpdate_port[i].read();
+		e_robot_array[i][8] = detectedObstacle[i];
 		cout << "|";
 		for (int j = 0; j < ROBOT_NUM_COLUMNS; j++){
 			cout << e_robot_array[i][j] << "\t|";
@@ -181,7 +282,28 @@ void ENVIRONMENT<environment_T>::prc_print_environment(){
 		/*cout << "Boundary Port" <<  << endl;
 		cout << "Grid Update " <<  << endl;*/
 	}
-	cout << "=================================================================" << endl;
+	cout << "=========================================================================" << endl;
+
+	// PRINT ROBOT PATH
+	// UPDATE EACH ROBOT
+	for (int i = 0; i < *(_numRobots); i++){
+		if (robot_start_moving_port[i].read() == 1){
+			cout << "ENVIRONMENT ROBOT " << i << " PATH: ";
+			for (int j = 0; j < 6; j++)
+			{
+
+				if (i == 0)
+					cout << "(" << block0_array[j] << ") --> ";
+				else if (i == 1)
+					cout << "(" << block1_array[j] << ") --> ";
+				else if (i == 2)
+					cout << "(" << block2_array[j] << ") --> ";
+			}
+			cout << endl;
+		}
+	}
+	///////////////////
+
 
 
 	cout << endl << "==============OBSTACLE ARRAY=============" << endl;
@@ -200,6 +322,38 @@ void ENVIRONMENT<environment_T>::prc_print_environment(){
 		}
 		cout << endl;
 	}
+	cout << "=========================================" << endl;
+
+
+	cout << endl << "==============NODES ARRAY=============" << endl;
+	cout << "|NI\t|RO\t|R1\t|R2\t" << endl;
+	cout << "=========================================" << endl;
+	
+	cout << "4\t";
+	for (int i = 0; i < E_NUM_ROBOTS; i++){
+
+		cout << node4_robots_in_path[i] << "\t|";
+	}
+	cout << endl;
+	cout << "20\t";
+	for (int i = 0; i < E_NUM_ROBOTS; i++){
+
+		cout << node20_robots_in_path[i] << "\t|";
+	}
+	cout << endl;
+	cout << "22\t";
+	for (int i = 0; i < E_NUM_ROBOTS; i++){
+
+		cout << node22_robots_in_path[i] << "\t|";
+	}
+	cout << endl;
+	cout << "24\t";
+	for (int i = 0; i < E_NUM_ROBOTS; i++){
+
+		cout << node24_robots_in_path[i] << "\t|";
+	}
+
+	cout << endl;
 	cout << "=========================================" << endl;
 
 

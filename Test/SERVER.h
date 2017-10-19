@@ -47,6 +47,9 @@ public:
 	
 	//vector<int> block_array;
 
+	sc_out<sc_int<8> >	block0_array_port_out[8];			// Server(out)-- >ROBOT(inout)--> ENVIRONMENT(in)
+	sc_out<sc_int<8> >	block1_array_port_out[8];			// Server(out)-- >ROBOT(inout)--> ENVIRONMENT(in)
+	sc_out<sc_int<8> >	block2_array_port_out[8];			// Server(out)-- >ROBOT(inout)--> ENVIRONMENT(in)
 
 
 	sc_signal<bool> checkingBoundary[S_NUM_ROBOTS];	// USED TO HOLD THE ROBOT WHILE CHECKING BOUNDARY
@@ -108,7 +111,7 @@ public:
 
 		SC_METHOD(prc_server);
 		sensitive << clock.pos();
-
+		dont_initialize();
 		
 		SC_METHOD(prc_robot0_start);
 		sensitive << fifo_start[0].pos();
@@ -122,6 +125,7 @@ public:
 
 		SC_METHOD(print_server);
 		sensitive << clock.pos();
+		dont_initialize();
 	}
 	
 	

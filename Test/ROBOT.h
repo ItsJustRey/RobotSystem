@@ -19,6 +19,10 @@ public:
 	sc_inout<sc_int<8> >e_cg_array_port;
 	sc_inout<sc_int<8> >e_ng_array_port;
 
+
+	sc_inout<sc_int<8> >	block_array_port_inout[8];			// Server(out)-- >ROBOT(inout)--> ENVIRONMENT(in)
+	sc_int<8> block_array[8];
+
 	void prc_robot();
 	void print_robot();
 

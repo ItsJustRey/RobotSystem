@@ -41,7 +41,11 @@ int sc_main(int argc, char *argv[]){
 	sc_signal<sc_int<8> >				e_cg_array_sig[NUM_ROBOTS];
 
 	sc_signal<sc_int<8> >				e_ng_array_sig[NUM_ROBOTS];
+	
 
+	sc_signal<sc_int<8> >		block0_array_sig[8];
+	sc_signal<sc_int<8> >		block1_array_sig[8];
+	sc_signal<sc_int<8> >		block2_array_sig[8];
 	// CREATE ROBOT 0
 	typedef int robot_T;
 	const robot_T r0_id = 0;
@@ -58,6 +62,11 @@ int sc_main(int argc, char *argv[]){
 	robot0.robot_start_moving_port(robot_start_moving_sig[r0_id]);
 	robot0.e_cg_array_port(e_cg_array_sig[r0_id]);
 	robot0.e_ng_array_port(e_ng_array_sig[r0_id]);
+
+	for (int i = 0; i < 8; i++){
+		robot0.block_array_port_inout[i](block0_array_sig[i]);
+	}
+	
 	
 	// CREATE ROBOT 1
 	typedef int robot_T;
@@ -75,6 +84,10 @@ int sc_main(int argc, char *argv[]){
 	robot1.robot_start_moving_port(robot_start_moving_sig[r1_id]);
 	robot1.e_cg_array_port(e_cg_array_sig[r1_id]);
 	robot1.e_ng_array_port(e_ng_array_sig[r1_id]);
+
+	for (int i = 0; i < 8; i++){
+		robot1.block_array_port_inout[i](block1_array_sig[i]);
+	}
 
 
 	// CREATE ROBOT 2
@@ -94,7 +107,9 @@ int sc_main(int argc, char *argv[]){
 	robot2.e_cg_array_port(e_cg_array_sig[r2_id]);
 	robot2.e_ng_array_port(e_ng_array_sig[r2_id]);
 
-
+	for (int i = 0; i < 8; i++){
+		robot2.block_array_port_inout[i](block2_array_sig[i]);
+	}
 
 
 	// CREATE SERVER 
@@ -115,9 +130,16 @@ int sc_main(int argc, char *argv[]){
 		server1.s_start_robot_port[i](s_start_robot_sig[i]);
 		server1.robot_start_moving_port[i](robot_start_moving_sig[i]);
 		server1.fifo_start[i](fifo_start_sig[i]);
-	
+
+		
 	}
 
+	for (int i = 0; i < 8; i++){
+		server1.block0_array_port_out[i](block0_array_sig[i]);
+		server1.block1_array_port_out[i](block1_array_sig[i]);
+		server1.block2_array_port_out[i](block2_array_sig[i]);
+
+	}
 
 	// CREATE ENVIRONMENT 
 	typedef int environment_T;
@@ -137,8 +159,18 @@ int sc_main(int argc, char *argv[]){
 		environment1.e_cg_array_port[i](e_cg_array_sig[i]);
 		environment1.e_ng_array_port[i](e_ng_array_sig[i]);
 		environment1.robot_start_moving_port[i](robot_start_moving_sig[i]);
+
+
+
+		
+
 	}
 
+	for (int i = 0; i < 6; i++){
+		environment1.block0_array_port_in[i](block0_array_sig[i]);
+		environment1.block1_array_port_in[i](block1_array_sig[i]);
+		environment1.block2_array_port_in[i](block2_array_sig[i]);
+	}
 
 
 

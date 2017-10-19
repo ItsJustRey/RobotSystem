@@ -159,6 +159,16 @@ void SERVER<server_T>::prc_robot0_start(){
 		{
 			fifo_start[0].write(0);
 			robot_start_moving_port[0].write(1);
+
+
+			///////////////
+			for (int i = 0; i < 8; i++)
+			{
+				block0_array_port_out[i].write(block0_array[i]);
+			}
+			///////////////////
+
+			
 		}
 		
 	}
@@ -197,6 +207,14 @@ void SERVER<server_T>::prc_robot1_start(){
 		{
 			fifo_start[1].write(0);
 			robot_start_moving_port[1].write(1);
+
+			///////////////
+			for (int i = 0; i < 8; i++)
+			{
+				block1_array_port_out[i].write(block1_array[i]);
+			}
+			///////////////////
+
 		}
 
 	}
@@ -234,6 +252,15 @@ void SERVER<server_T>::prc_robot2_start(){
 		{
 			fifo_start[2].write(0);
 			robot_start_moving_port[2].write(1);
+
+
+			///////////////
+			for (int i = 0; i < 8; i++)
+			{
+				block2_array_port_out[i].write(block2_array[i]);
+			}
+			///////////////////
+
 		}
 
 	}
@@ -319,10 +346,10 @@ void SERVER<server_T>::prc_robot2_start(){
 
 void SERVER<server_T>::print_server(){
 
-	cout << endl << "~~~~~~~~~~~~~Server~~~~~~~~~~~~~~" << endl;
-	cout << "=================================" << endl;
+	cout << endl << "~~~~~~~~~~~~~~~~~Server~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+	cout << "=================================================" << endl;
 	// THEN READ DATA STRUCTURE FROM LOCAL ARRAYS
-	cout << "|RI\t|CG\t|NG\t|MOVING\t|BOUND\t|GRID\t" << endl;
+	cout << "|RI\t|CG\t|NG\t|MOVING\t|BOUND\t|GRID\t|" << endl;
 	for (int i = 0; i < *(_numRobots); i++){
 		server_array[i][0] = r_index_array[i];
 		server_array[i][1] = r_cg_array[i];
@@ -336,6 +363,6 @@ void SERVER<server_T>::print_server(){
 		}
 		cout << endl;
 	}
-	cout << "=================================" << endl;
+	cout << "=================================================" << endl;
 
 }

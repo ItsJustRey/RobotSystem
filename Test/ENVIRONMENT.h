@@ -5,12 +5,15 @@
 using namespace std;
 const int ENVIRONMENT_MAX_ROBOTS = 5;
 const int ENVIRONMENT_MAX_OBSTACLES = 5;
-const int ROBOT_NUM_COLUMNS = 8;
+const int ROBOT_NUM_COLUMNS = 9;
 const int OBSTACLE_NUM_COLUMNS = 5;
 const int E_NUM_ROBOTS = 3;
 const int E_NUM_OBSTACLES = 2;
 const int GRID_WIDTH = 5;
 const int GRID_HEIGHT = 5;
+
+const int NUM_NODES = 4;
+const int NODES_NUM_COLUMNS = 4;
 
 template <class T> class ENVIRONMENT : public sc_module{
 public:
@@ -49,26 +52,46 @@ public:
 	sc_in<sc_int<8> >e_cg_array_port[E_NUM_ROBOTS];
 	sc_in<sc_int<8> >e_ng_array_port[E_NUM_ROBOTS];
 
-	/*vector<int> robot0_grids;
-	vector<int> robot1_grids;
-	vector<int> robot2_grids;*/
 
-	sc_int<8> robot0_grids[8];
-	sc_int<8> robot1_grids[8];
-	sc_int<8> robot2_grids[8];
+	
 
-	sc_int<1> IsX;
-	sc_int<1> IsY;
+	sc_in<sc_int<8> >	block0_array_port_in[6];			// Server(out)-- >ROBOT(inout)--> ENVIRONMENT(in)
+	sc_in<sc_int<8> >	block1_array_port_in[6];			// Server(out)-- >ROBOT(inout)--> ENVIRONMENT(in)
+	sc_in<sc_int<8> >	block2_array_port_in[6];			// Server(out)-- >ROBOT(inout)--> ENVIRONMENT(in)
 
+
+
+	sc_int<8> block0_array[6];
+	sc_int<8> block1_array[6];
+	sc_int<8> block2_array[6];
+
+
+
+
+	// NODES
+
+	//sc_int<8> nodes_index[NUM_NODES] = [0, 4, 20, 22, 24];
+
+
+	sc_int<8> node4_robots_in_path[E_NUM_ROBOTS];
+	sc_int<8> node20_robots_in_path[E_NUM_ROBOTS];
+	sc_int<8> node22_robots_in_path[E_NUM_ROBOTS];
+	sc_int<8> node24_robots_in_path[E_NUM_ROBOTS];
+
+	sc_int<8> node0_priority[E_NUM_ROBOTS];
+	sc_int<8> node4_priority[E_NUM_ROBOTS];
+	sc_int<8> node20_priority[E_NUM_ROBOTS];
+	sc_int<8> node22_priority[E_NUM_ROBOTS];
+	sc_int<8> node24_priority[E_NUM_ROBOTS];
+	//sc_int<8>  e_nodes_array[NUM_NODES][NODES_NUM_COLUMNS];	// ENVIRONMENT DATA STRUCTURE (NODES)
 
 	void prc_environment();
 	void prc_robot0_obstacle_detected();
 	void prc_robot1_obstacle_detected();
+
+	void prc_nodes();
 	void prc_print_environment();
 
-	sc_fifo <int> robot0_n_path;
-	sc_fifo <int> robot1_n_path;
-	sc_fifo <int> robot2_n_path;
 
 	SC_HAS_PROCESS(ENVIRONMENT);
 	ENVIRONMENT(sc_module_name name, const T* numRobots, const T* numObstacles, const T* r0_id, const T* r0_speed, const T* r0_grid, const T* r0_x, const T* r0_y, 
@@ -115,6 +138,13 @@ public:
 			e_robot_array[i][6] = r_speed_array[i];
 		}
 		
+		for (int i = 0; i < *(_numRobots); i++){
+			node4_robots_in_path[i] = 0;
+			node20_robots_in_path[i] = 0;
+			node22_robots_in_path[i] = 0;
+			node24_robots_in_path[i] = 0;
+		}
+			
 		o_index_array[0] = 0;
 		o_cg_array[0] = 10;
 		o_ng_array[0] = 0;
@@ -133,25 +163,27 @@ public:
 		}
 		
 
-		sc_fifo <int> robot0_n_path(8);
-		sc_fifo <int> robot1_n_path(8);
-		sc_fifo <int> robot2_n_path(8);
-
-
 		cout << "CREATING ENVIRONMENT..." << "\tName: " << name << "\t# of Robots: " << *(_numRobots) << "\t# of Obstacles: " << *(_numObstacles) << endl;
 		
 		SC_METHOD(prc_environment);
 		sensitive << clock.pos();
-		//dont_initialize();
+		dont_initialize();
 		SC_METHOD(prc_robot0_obstacle_detected);
 		sensitive << detectedObstacle[0].posedge_event();
 		dont_initialize();
 		SC_METHOD(prc_robot1_obstacle_detected);
 		sensitive << detectedObstacle[1].posedge_event();
 		dont_initialize();
+
+		SC_METHOD(prc_nodes);
+		sensitive << clock.pos();
+		dont_initialize();
+
 		SC_METHOD(prc_print_environment);
 		sensitive << clock.pos();
-		//dont_initialize();
+		dont_initialize();
+
+
 
 	
 		
