@@ -2,9 +2,9 @@
 typedef int server_T;
 void SERVER<server_T>::prc_server(){
 
-	
-	
-	//// FOR ALL ROBOTS
+
+
+	//	//// FOR ALL ROBOTS
 	for (int thisRobot = 0; thisRobot < *(_numRobots); thisRobot++){
 
 		if (boundary_port[thisRobot].read() == 1){
@@ -15,7 +15,7 @@ void SERVER<server_T>::prc_server(){
 		// ROBOT STOPPED (BECAUSE OF BOUNDARY)
 		// Server(in) <-- ROBOT(inout) <-- Environment(out)
 		if (boundary_port[thisRobot].read() == 1 && checkingBoundary[thisRobot] == true){
-			
+
 			// CHECK ALL OTHER ROBOTS CURRENT GRID
 			for (int otherRobot = 0; otherRobot < *(_numRobots); otherRobot++){
 
@@ -30,13 +30,13 @@ void SERVER<server_T>::prc_server(){
 					}
 					else{
 						gridUpdate_port[thisRobot].write(0);
-						
+
 					}
 				}
 			}
 			checkingBoundary[thisRobot] = false;
 
-			
+
 		}
 		else{
 			gridUpdate_port[thisRobot].write(0);
@@ -45,61 +45,34 @@ void SERVER<server_T>::prc_server(){
 
 		if (gridUpdate_port[thisRobot].read() == 1){
 			cout << "INCREMENTING CG NG OF ROBOT " << thisRobot << endl;
-///Robot 0
-			if (thisRobot == 0 && r_ng_array[thisRobot]!=-1)		//Checks if index is equal to Robot0 and that it hasnt reached end of FIFO
+			/////Robot 0
+			if (thisRobot == 0 && r_ng_array[thisRobot] != -1)		//Checks if index is equal to Robot0 and that it hasnt reached end of FIFO
 			{
 
-				r_cg_array[thisRobot] = 1 * r_ng_array[thisRobot];	//Sets current grid to next grid 
-				r_ng_array[thisRobot] = 1 * robot0_n_path.read();	//Sets next grid to the next value in FIFO
-				e_ng_array_port[thisRobot].write(r_ng_array[thisRobot]);
-				e_cg_array_port[thisRobot].write(r_cg_array[thisRobot]);
-			}
-			else if (thisRobot == 0 && r_ng_array[thisRobot] == -1) //Checks if the end of FIFO has been reached
-			{
-				r_ng_array[thisRobot] = 1*r_cg_array[thisRobot];	//Sets the next grid to the current grid to indicate robot has stopped
-				robot_start_moving_port[0].write(0);				//Stop the robot
-				e_ng_array_port[thisRobot].write(r_ng_array[thisRobot]);
-				e_cg_array_port[thisRobot].write(r_cg_array[thisRobot]);
+				r_cg_array[thisRobot] = r_ng_array[thisRobot];	//Sets current grid to next grid 
 
-			}
-///Robot1
-			if (thisRobot == 1 && r_ng_array[thisRobot] != -1)      //Checks if index is equal to Robot1 and that it hasnt reached end of FIFO
-			{
+				for (int i = 0; i < 7; i++)
+				{
 
-				r_cg_array[thisRobot] = 1 * r_ng_array[thisRobot];  //Sets current grid to next grid 
-				r_ng_array[thisRobot] = 1 * robot1_n_path.read();   //Sets next grid to the next value in FIFO
-				e_ng_array_port[thisRobot].write(r_ng_array[thisRobot]);
-				e_cg_array_port[thisRobot].write(r_cg_array[thisRobot]);
-			}
-			else if (thisRobot == 1 && r_ng_array[thisRobot] == -1) //Checks if the end of FIFO has been reached
-			{
-				r_ng_array[thisRobot] = 1 * r_cg_array[thisRobot];  //Sets the next grid to the current grid to indicate robot has stopped
-				robot_start_moving_port[1].write(0);                //Stop the robot
-				e_ng_array_port[thisRobot].write(r_ng_array[thisRobot]);
-				e_cg_array_port[thisRobot].write(r_cg_array[thisRobot]);
-			}
-///Robot2
-			if (thisRobot == 2 && r_ng_array[thisRobot] != -1)      //Checks if index is equal to Robot2 and that it hasnt reached end of FIFO
-			{
-
-				r_cg_array[thisRobot] = 1 * r_ng_array[thisRobot];  //Sets current grid to next grid 
-				r_ng_array[thisRobot] = 1 * robot2_n_path.read();   //Sets next grid to the next value in FIFO
-				e_ng_array_port[thisRobot].write(r_ng_array[thisRobot]);
-				e_cg_array_port[thisRobot].write(r_cg_array[thisRobot]);
-			}
-			else if (thisRobot == 2 && r_ng_array[thisRobot] == -1) //Checks if the end of FIFO has been reached
-			{
-				r_ng_array[thisRobot] = 1 * r_cg_array[thisRobot];  //Sets the next grid to the current grid to indicate robot has stopped
-				robot_start_moving_port[2].write(0);                //Stop the robot
+					if (block_array[i] == r_ng_array[thisRobot] && block_array[i + 1] > 0)
+					{
+						r_ng_array[thisRobot] = block_array[i + 1];	//Sets next grid to the next value in FIFO
+						break;
+					}
+				}
 				e_ng_array_port[thisRobot].write(r_ng_array[thisRobot]);
 				e_cg_array_port[thisRobot].write(r_cg_array[thisRobot]);
 			}
 
-			
-		} 
-		
+			else if (thisRobot == 0 && r_cg_array[thisRobot] == -1) //Checks if the end of FIFO has been reached
+			{
+				r_ng_array[thisRobot] = r_cg_array[thisRobot];	//Sets the next grid to the current grid to indicate robot has stopped
+				robot_start_moving_port[0].write(0);			//Stop the robot
+				e_ng_array_port[thisRobot].write(r_ng_array[thisRobot]);
+				e_cg_array_port[thisRobot].write(r_cg_array[thisRobot]);
+			}
 
-		
+		}
 	}
 }
 
@@ -133,68 +106,74 @@ void SERVER<server_T>::prc_robot2_start(){
 
 
 void SERVER<server_T>::prc_robot_path(){
-	for (;;){
-		if (robot_start_moving_port[0].read() == 1) //Checks if robot0 has started moving
+		if (fifo_start.read() == 1) //Checks if robot0 has started moving
 		{
 			//WRITE VALUES IN FIFO
 			robot0_n_path.write(2);
-			wait(1, SC_MS);
+			next_trigger(1.0, SC_MS);
 			robot0_n_path.write(3);
-			wait(1, SC_MS);
+			next_trigger(1.0, SC_MS);
 			robot0_n_path.write(4);
-			wait(1, SC_MS);
+			next_trigger(1.0, SC_MS);
 			robot0_n_path.write(14);
-			wait(1, SC_MS);
+			next_trigger(1.0, SC_MS);
 			robot0_n_path.write(24);
-			wait(1, SC_MS);
+			next_trigger(1.0, SC_MS);
 			robot0_n_path.write(34);
-			wait(1, SC_MS);
+			next_trigger(1.0, SC_MS);
 			robot0_n_path.write(-1);
-			wait(1, SC_MS);
+			next_trigger(1.0, SC_MS);
 
+			for (int i = 0; i < 7; i++)
+			{
+				int val;
+				robot0_n_path.nb_read(val);
+			    block_array[i] = val;
+				
+			}
+			
+			robot_start_moving_port[0].write(1);
 		}
-		if (robot_start_moving_port[1].read() == 1) //Checks if robot1 has started moving
-		{
-			//WRITE VALUES IN FIFO
-			robot1_n_path.write(34);
-			wait(1, SC_MS);
-			robot1_n_path.write(24);
-			wait(1, SC_MS);
-			robot1_n_path.write(23);
-			wait(1, SC_MS);
-			robot1_n_path.write(22);
-			wait(1, SC_MS);
-			robot1_n_path.write(32);
-			wait(1, SC_MS);
-			robot1_n_path.write(42);
-			wait(1, SC_MS);
-			robot1_n_path.write(-1);
-			wait(1, SC_MS);
-		}
-		if (robot_start_moving_port[2].read() == 1) //Checks if robot2 has started moving
-		{
-			//WRITE VALUES IN FIFO
-			robot2_n_path.write(21);
-			wait(1, SC_MS);
-			robot2_n_path.write(22);
-			wait(1, SC_MS);
-			robot2_n_path.write(23);
-			wait(1, SC_MS);
-			robot2_n_path.write(24);
-			wait(1, SC_MS);
-			robot2_n_path.write(14);
-			wait(1, SC_MS);
-			robot2_n_path.write(4);
-			wait(1, SC_MS);
-			robot2_n_path.write(-1);
-			wait(1, SC_MS);
-		}
+		//if (robot_start_moving_port[1].read() == 1) //Checks if robot1 has started moving
+		//{
+		//	//WRITE VALUES IN FIFO
+		//	robot1_n_path.write(34);
+		//
+		//	robot1_n_path.write(24);
+
+		//	robot1_n_path.write(23);
+		//	
+		//	robot1_n_path.write(22);
+	
+		//	robot1_n_path.write(32);
+		//
+		//	robot1_n_path.write(42);
+		//	
+		//	robot1_n_path.write(-1);
+		//	
+		//}
+		//if (robot_start_moving_port[2].read() == 1) //Checks if robot2 has started moving
+		//{
+		//	//WRITE VALUES IN FIFO
+		//	robot2_n_path.write(21);
+		//	
+		//	robot2_n_path.write(22);
+		//	
+		//	robot2_n_path.write(23);
+	
+		//	robot2_n_path.write(24);
+		//	
+		//	robot2_n_path.write(14);
+		//	
+		//	robot2_n_path.write(4);
+		//	
+		//	robot2_n_path.write(-1);
+		//	
+		//}
 		
 
 	}
 
-
-}
 
 void SERVER<server_T>::print_server(){
 

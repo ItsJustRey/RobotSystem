@@ -1,4 +1,7 @@
 #include "systemc.h"
+#include <vector>
+#include <iostream>
+using namespace std;
 #define _CRT_SECURE_NO_WARNINGS
 
 const int SERVER_MAX_ROBOTS = 5;
@@ -19,7 +22,6 @@ public:
 
 	sc_out<bool>	robot_start_moving_port[S_NUM_ROBOTS];		// Server(out)-- >ROBOT(inout)--> ENVIRONMENT(in)
 
-
 	
 	sc_int<8>  r_index_array[S_NUM_ROBOTS];					// COLUMN FOR EACH ROBOT INDEX
 	sc_int<8>  r_cg_array[S_NUM_ROBOTS];					// COLUMN FOR EACH ROBOT's CURRENT GRID
@@ -29,13 +31,17 @@ public:
 	sc_int<8>  server_array[S_NUM_ROBOTS][NUM_COLUMNS];	// SERVER DATA STRUCTURE 
 	
 	
-	sc_in<bool>				s_start_robot_port[S_NUM_ROBOTS];	// WRITE TO THIS SIGNAL (CONNECTED TO SERVER from MAIN)
+	sc_in<bool>	s_start_robot_port[S_NUM_ROBOTS];	// WRITE TO THIS SIGNAL (CONNECTED TO SERVER from MAIN)
 
 	sc_out<sc_int<8> >e_cg_array_port[S_NUM_ROBOTS];
 	sc_out<sc_int<8> >e_ng_array_port[S_NUM_ROBOTS];
 
-	
+	sc_int<8> block_array[8];
+	sc_int<4>robot0_count;
 
+	sc_in<bool>fifo_start;
+	
+	//vector<int> block_array;
 
 
 
@@ -93,15 +99,16 @@ public:
 
 		cout << "CREATING SERVER..." << "\tName: " << name << "\t# of Robots: " << *(_numRobots) << endl;
 
-		SC_CTHREAD(prc_robot_path, clock.pos());
+		/*SC_CTHREAD(prc_robot_path,fifo_start.pos());*/
+		
 
 		SC_METHOD(prc_server);
 		sensitive << clock.pos();
 		dont_initialize();
 
-		/*SC_METHOD(prc_robot_path);
-		sensitive << clock.pos();
-		dont_initialize();*/
+		SC_METHOD(prc_robot_path);
+		sensitive << fifo_start.pos();
+		//dont_initialize();
 		
 		SC_METHOD(prc_robot0_start);
 		sensitive << s_start_robot_port[0].pos();

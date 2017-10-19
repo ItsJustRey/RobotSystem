@@ -2,54 +2,36 @@
 typedef int environment_T;
 void ENVIRONMENT<environment_T>::prc_environment(){
 
+
 	// UPDATE EACH ROBOT
 	for (int i = 0; i < *(_numRobots); i++){
 
 
 		if (robot_start_moving_port[i].read() == 1){
 
-				// CHECK IF SERVER ALLOWED ROBOT TO MOVE
-				// Server(out)-- >ROBOT(inout)--> ENVIRONMENT(in)
-				if (gridUpdate_port[i].read() == 1 && checkingBoundary[i] == true)
-				{
-					
-					checkingBoundary[i] = false;		// finally received signal 
-					r_cg_array[i] = e_cg_array_port[i].read();					// UPDATE GRIDS
-					r_ng_array[i] = e_ng_array_port[i].read();	// UPDATE GRIDS
+			r_cg_array[i] = e_cg_array_port[i].read();
+			r_ng_array[i] = e_ng_array_port[i].read();
 
-					if (abs(r_ng_array[i] - r_cg_array[i]) == 1)
-					{
-						r_x_array[i] = -1; // START FROM BEGINNING OF GRID
-						IsX = 1;
-					}
-					else if (abs(r_ng_array[i] - r_cg_array[i]) == 10)
-					{
-						r_y_array[i] = -1;
-						IsY = 1;
-					}
-				}
-				else
-					{
-						r_cg_array[i] = e_cg_array_port[i].read();	// DONT UPDATE GRIDS
-						r_ng_array[i] = e_ng_array_port[i].read();		// DONT UPDATE GRIDS
 
-						if (abs(r_ng_array[i] - r_cg_array[i]) == 1)
-						{
-							r_x_array[i] = r_x_array[i];		// DONT UPDATE GRIDS
-							IsX = 0;
-						}
-						else if (abs(r_ng_array[i] - r_cg_array[i]) == 10)
-						{
-							r_y_array[i] = r_y_array[i];		// DONT UPDATE GRIDS
-							IsY=0;
-						}
-					}
+			// CHECK IF SERVER ALLOWED ROBOT TO MOVE
+			// Server(out)-- >ROBOT(inout)--> ENVIRONMENT(in)
+			if (gridUpdate_port[i].read() == 1 && checkingBoundary[i] == true)
+			{
+				checkingBoundary[i] = false;		// finally received signal 
+				r_cg_array[i] = e_cg_array_port[i].read();					// UPDATE GRIDS
+				r_ng_array[i] = e_ng_array_port[i].read();				// UPDATE GRIDS
+				r_x_array[i] = -1;					// START FROM BEGINNING OF GRID
+			}
+			else{
+				r_cg_array[i] = e_cg_array_port[i].read();		// DONT UPDATE GRIDS
+				r_ng_array[i] = r_ng_array[i];		// DONT UPDATE GRIDS
+				r_x_array[i] = r_x_array[i];		// DONT UPDATE GRIDS
+			}
 
 
 
 			// CHECK IF ROBOT IS ABOUT TO CROSS BOUNDARY
 			// Server(in) <-- ROBOT(inout) <-- Environment(out)
-
 			if ((r_x_array[i] + r_speed_array[i]) >= GRID_WIDTH){
 
 				// CROSSING
@@ -62,34 +44,14 @@ void ENVIRONMENT<environment_T>::prc_environment(){
 				boundary_port[i].write(0);
 
 				// ONLY UPDATE  X/Y WHEN ROBOT DOES NOT DETECT OBSTACLES
-				if (detectedObstacle[i] == false && IsX==1){
+				if (detectedObstacle[i] == false){
 					r_x_array[i] = r_x_array[i] + r_speed_array[i];
 				}
 				else{
 					r_x_array[i] = r_x_array[i];
 				}
 			}
-	///////////////////////////////////////////////////////////////////////////////
 
-			if ((r_y_array[i] + r_speed_array[i]) >= GRID_HEIGHT){
-
-				// CROSSING
-				checkingBoundary[i] = true;
-				boundary_port[i].write(1);
-
-			}
-			else{
-				// NOT CROSSING
-				boundary_port[i].write(0);
-
-				// ONLY UPDATE  X/Y WHEN ROBOT DOES NOT DETECT OBSTACLES
-				if (detectedObstacle[i] == false && IsY==1 ){
-					r_y_array[i] = r_y_array[i] + r_speed_array[i];
-				}
-				else{
-					r_y_array[i] = r_y_array[i];
-				}
-			}
 
 			// CHECK IF ROBOT IS NEAR OBSTACLE
 			// Server(in) <-- ROBOT(inout) <-- Environment(out)
@@ -144,6 +106,8 @@ void ENVIRONMENT<environment_T>::prc_robot1_obstacle_detected(){
 
 void ENVIRONMENT<environment_T>::prc_print_environment(){
 
+	next_trigger(1.0,SC_SEC);
+	next_trigger(1.0, SC_SEC);
 
 	cout << endl << "~~~~~~~~~~~~~~~~~~~~~~~ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 	cout << endl << "===========================ROBOT ARRAY===========================" << endl;
