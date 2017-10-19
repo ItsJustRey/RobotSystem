@@ -35,11 +35,15 @@ public:
 
 	sc_out<sc_int<8> >e_cg_array_port[S_NUM_ROBOTS];
 	sc_out<sc_int<8> >e_ng_array_port[S_NUM_ROBOTS];
+	sc_inout<bool>fifo_start[S_NUM_ROBOTS];
 
-	sc_int<8> block_array[8];
-	sc_int<4>robot0_count;
-
-	sc_in<bool>fifo_start;
+	sc_int<8> block0_array[8];
+	sc_int<8> block1_array[8];
+	sc_int<8> block2_array[8];
+	
+	sc_int<8>array0_count;
+	sc_int<8>array1_count;
+	sc_int<8>array2_count;
 	
 	//vector<int> block_array;
 
@@ -104,27 +108,20 @@ public:
 
 		SC_METHOD(prc_server);
 		sensitive << clock.pos();
-		dont_initialize();
 
-		SC_METHOD(prc_robot_path);
-		sensitive << fifo_start.pos();
-		//dont_initialize();
 		
 		SC_METHOD(prc_robot0_start);
-		sensitive << s_start_robot_port[0].pos();
-		dont_initialize();
+		sensitive << fifo_start[0].pos();
+		
 
 		SC_METHOD(prc_robot1_start);
-		sensitive << s_start_robot_port[1].pos();
-		dont_initialize();
+		sensitive << fifo_start[1].pos();
 
 		SC_METHOD(prc_robot2_start);
-		sensitive << s_start_robot_port[2].pos();
-		dont_initialize();
+		sensitive << fifo_start[2].pos();
 
 		SC_METHOD(print_server);
 		sensitive << clock.pos();
-		dont_initialize();
 	}
 	
 	

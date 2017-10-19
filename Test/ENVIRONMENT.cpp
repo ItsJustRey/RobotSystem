@@ -3,11 +3,14 @@ typedef int environment_T;
 void ENVIRONMENT<environment_T>::prc_environment(){
 
 
+	
+
 	// UPDATE EACH ROBOT
 	for (int i = 0; i < *(_numRobots); i++){
 
 
 		if (robot_start_moving_port[i].read() == 1){
+
 
 			r_cg_array[i] = e_cg_array_port[i].read();
 			r_ng_array[i] = e_ng_array_port[i].read();
@@ -15,7 +18,7 @@ void ENVIRONMENT<environment_T>::prc_environment(){
 
 			// CHECK IF SERVER ALLOWED ROBOT TO MOVE
 			// Server(out)-- >ROBOT(inout)--> ENVIRONMENT(in)
-			if (gridUpdate_port[i].read() == 1 && checkingBoundary[i] == true)
+			if (gridUpdate_port[i].read() == 1 && checkingBoundary[i] == true && abs(r_ng_array[i]-r_cg_array[i])== 1 )
 			{
 				checkingBoundary[i] = false;		// finally received signal 
 				r_cg_array[i] = e_cg_array_port[i].read();					// UPDATE GRIDS
@@ -30,28 +33,75 @@ void ENVIRONMENT<environment_T>::prc_environment(){
 
 
 
-			// CHECK IF ROBOT IS ABOUT TO CROSS BOUNDARY
-			// Server(in) <-- ROBOT(inout) <-- Environment(out)
-			if ((r_x_array[i] + r_speed_array[i]) >= GRID_WIDTH){
+			
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+			if (gridUpdate_port[i].read() == 1 && checkingBoundary[i] == true && abs(r_ng_array[i] - r_cg_array[i]) !=1)
+			{
+	
+				checkingBoundary[i] = false;		// finally received signal 
+				r_cg_array[i] = e_cg_array_port[i].read();					// UPDATE GRIDS
+				r_ng_array[i] = e_ng_array_port[i].read();				// UPDATE GRIDS
+				r_y_array[i] = -1;					// START FROM BEGINNING OF GRID
+			}
+			else{
+				r_cg_array[i] = e_cg_array_port[i].read();		// DONT UPDATE GRIDS
+				r_ng_array[i] = r_ng_array[i];		// DONT UPDATE GRIDS
+				r_y_array[i] = r_y_array[i];		// DONT UPDATE GRIDS
+			}
 
-				// CROSSING
-				checkingBoundary[i] = true;
-				boundary_port[i].write(1);
+
+			if (abs(r_ng_array[i] - r_cg_array[i]) == 1){
+
+				// CHECK IF ROBOT IS ABOUT TO CROSS BOUNDARY
+				// Server(in) <-- ROBOT(inout) <-- Environment(out)
+				if ((r_x_array[i] + r_speed_array[i]) >= GRID_WIDTH){
+
+					// CROSSING
+					checkingBoundary[i] = true;
+					boundary_port[i].write(1);
+
+				}
+				else{
+					// NOT CROSSING
+					boundary_port[i].write(0);
+
+					// ONLY UPDATE  X/Y WHEN ROBOT DOES NOT DETECT OBSTACLES
+					if (detectedObstacle[i] == false){
+						r_x_array[i] = r_x_array[i] + r_speed_array[i];
+					}
+					else{
+						r_x_array[i] = r_x_array[i];
+					}
+				}
+
 
 			}
 			else{
-				// NOT CROSSING
-				boundary_port[i].write(0);
 
-				// ONLY UPDATE  X/Y WHEN ROBOT DOES NOT DETECT OBSTACLES
-				if (detectedObstacle[i] == false){
-					r_x_array[i] = r_x_array[i] + r_speed_array[i];
+				if ((r_y_array[i] + r_speed_array[i]) >= GRID_WIDTH){
+
+					// CROSSING
+					checkingBoundary[i] = true;
+					boundary_port[i].write(1);
+
 				}
 				else{
-					r_x_array[i] = r_x_array[i];
+					// NOT CROSSING
+					boundary_port[i].write(0);
+
+					// ONLY UPDATE  X/Y WHEN ROBOT DOES NOT DETECT OBSTACLES
+					if (detectedObstacle[i] == false)// && IsY==1)
+					{
+						r_y_array[i] = r_y_array[i] + r_speed_array[i];
+					}
+					else{
+						r_y_array[i] = r_y_array[i];
+					}
 				}
 			}
 
+
+			
 
 			// CHECK IF ROBOT IS NEAR OBSTACLE
 			// Server(in) <-- ROBOT(inout) <-- Environment(out)
@@ -106,8 +156,8 @@ void ENVIRONMENT<environment_T>::prc_robot1_obstacle_detected(){
 
 void ENVIRONMENT<environment_T>::prc_print_environment(){
 
-	next_trigger(1.0,SC_SEC);
-	next_trigger(1.0, SC_SEC);
+	//next_trigger(1.0,SC_SEC);
+	//next_trigger(1.0, SC_SEC);
 
 	cout << endl << "~~~~~~~~~~~~~~~~~~~~~~~ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 	cout << endl << "===========================ROBOT ARRAY===========================" << endl;
@@ -121,7 +171,7 @@ void ENVIRONMENT<environment_T>::prc_print_environment(){
 		e_robot_array[i][3] = r_x_array[i];
 		e_robot_array[i][4] = r_y_array[i];
 		e_robot_array[i][5] = boundary_port[i].read();
-		e_robot_array[i][6] = checkingBoundary[i];
+		e_robot_array[i][6] = gridUpdate_port[i].read();
 		e_robot_array[i][7] = detectedObstacle[i];
 		cout << "|";
 		for (int j = 0; j < ROBOT_NUM_COLUMNS; j++){

@@ -34,7 +34,7 @@ int sc_main(int argc, char *argv[]){
 
 	sc_signal<bool>				s_start_robot_sig[NUM_ROBOTS];				// SIGNAL WRITTEN ONLY TO SERVER
 
-	sc_signal<bool>				fifo_start_sig;
+	sc_signal<bool>				fifo_start_sig[NUM_ROBOTS];
 
 	sc_signal<bool>				robot_start_moving_sig[NUM_ROBOTS];			// Server(out)-- >ROBOT(inout)--> ENVIRONMENT(in)
 
@@ -102,7 +102,7 @@ int sc_main(int argc, char *argv[]){
 	const server_T server_numRobots = NUM_ROBOTS;
 	SERVER<server_T>	server1("server1", &server_numRobots, &r0_id, &r0_speed, &r0_grid, &r1_id, &r1_speed, &r1_grid, &r2_id, &r2_speed, &r2_grid);
 	server1.clock(clk_sig);
-	server1.fifo_start(fifo_start_sig);
+	
 	
 	for (int i = 0; i < NUM_ROBOTS; i++){
 		server1.r_id_port[i](r_id_array_sig[i]);
@@ -114,6 +114,7 @@ int sc_main(int argc, char *argv[]){
 
 		server1.s_start_robot_port[i](s_start_robot_sig[i]);
 		server1.robot_start_moving_port[i](robot_start_moving_sig[i]);
+		server1.fifo_start[i](fifo_start_sig[i]);
 	
 	}
 
@@ -144,36 +145,25 @@ int sc_main(int argc, char *argv[]){
 	
 
 	// START AT 0 seconds
-	s_start_robot_sig[0].write(1);
-	fifo_start_sig.write(1);
-	cout << "HELP" << sc_time_stamp() << endl;
-	cout << "HELP" << sc_time_stamp() << endl;
-	cout << "HELP" << sc_time_stamp() << endl;
-	cout << "HELP" << sc_time_stamp() << endl;
-	cout << "HELP" << sc_time_stamp() << endl;
 
-
-	// START AT 5 seconds
-	sc_start(10, SC_SEC);
-	//s_start_robot_sig[1].write(1);
-	cout << "HELP" << sc_time_stamp() << endl;
-	cout << "HELP" << sc_time_stamp() << endl;
-	cout << "HELP" << sc_time_stamp() << endl;
-	cout << "HELP" << sc_time_stamp() << endl;
-	cout << "HELP" << sc_time_stamp() << endl;
-
+	fifo_start_sig[0].write(1);
+	cout << " " << endl;
+	cout << "ROBOT 0 HAS ARRIVED " << sc_time_stamp() << endl;
 
 	// START AT 10 seconds
+	sc_start(10, SC_SEC);
+	fifo_start_sig[1].write(1);
+	cout << " " << endl;
+	cout << "ROBOT 1 HAS ARRIVED " << sc_time_stamp() << endl;
+
+	// START AT 2 seconds
 	sc_start(5, SC_SEC);
-	//s_start_robot_sig[2].write(1);
-	cout << "HELP" << sc_time_stamp() << endl;
-	cout << "HELP" << sc_time_stamp() << endl;
-	cout << "HELP" << sc_time_stamp() << endl;
-	cout << "HELP" << sc_time_stamp() << endl;
-	cout << "HELP" << sc_time_stamp() << endl;
+	fifo_start_sig[2].write(1);
+	cout << " " << endl;
+	cout << "ROBOT 2 HAS ARRIVED " << sc_time_stamp() << endl;
 
 	// CONTUINUE UNTIL 20 SECONDS
-	sc_start(60, SC_SEC);
+	sc_start(50, SC_SEC);
 
 	
 

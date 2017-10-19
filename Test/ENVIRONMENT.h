@@ -5,7 +5,7 @@
 using namespace std;
 const int ENVIRONMENT_MAX_ROBOTS = 5;
 const int ENVIRONMENT_MAX_OBSTACLES = 5;
-const int ROBOT_NUM_COLUMNS = 9;
+const int ROBOT_NUM_COLUMNS = 8;
 const int OBSTACLE_NUM_COLUMNS = 5;
 const int E_NUM_ROBOTS = 3;
 const int E_NUM_OBSTACLES = 2;
@@ -142,7 +142,7 @@ public:
 		
 		SC_METHOD(prc_environment);
 		sensitive << clock.pos();
-		dont_initialize();
+		//dont_initialize();
 		SC_METHOD(prc_robot0_obstacle_detected);
 		sensitive << detectedObstacle[0].posedge_event();
 		dont_initialize();
@@ -151,7 +151,7 @@ public:
 		dont_initialize();
 		SC_METHOD(prc_print_environment);
 		sensitive << clock.pos();
-		dont_initialize();
+		//dont_initialize();
 
 	
 		
