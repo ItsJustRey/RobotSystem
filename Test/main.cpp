@@ -71,7 +71,7 @@ int sc_main(int argc, char *argv[]){
 	// CREATE ROBOT 1
 	typedef int robot_T;
 	const robot_T r1_id = 1;
-	const robot_T r1_speed = 2;
+	const robot_T r1_speed = 4;
 	robot_T r1_grid = 44;
 	robot_T r1_x = 0;
 	robot_T r1_y = 4;
@@ -93,7 +93,7 @@ int sc_main(int argc, char *argv[]){
 	// CREATE ROBOT 2
 	typedef int robot_T;
 	const robot_T r2_id = 2;
-	const robot_T r2_speed = 1;
+	const robot_T r2_speed = 2;
 	robot_T r2_grid = 20;
 	robot_T r2_x = 0;
 	robot_T r2_y = 0;
@@ -194,10 +194,22 @@ int sc_main(int argc, char *argv[]){
 	cout << " " << endl;
 	cout << "ROBOT 2 HAS ARRIVED " << sc_time_stamp() << endl;
 
-	// CONTUINUE UNTIL 20 SECONDS
-	sc_start(55, SC_SEC);
 
-	
+	/*ofstream robot0_file;
+	ofstream robot1_file;
+	ofstream robot2_file;
+
+
+	robot0_file.open("robot0_file.txt");
+	robot1_file.open("robot1_file.txt");
+	robot2_file.open("robot2_file.txt");*/
+
+	// CONTUINUE UNTIL 20 SECONDS
+	sc_start(80, SC_SEC);
+
+	/*robot0_file.close();
+	robot1_file.close();
+	robot2_file.close();*/
 
 	return 0;
 }

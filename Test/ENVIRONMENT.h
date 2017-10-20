@@ -17,6 +17,10 @@ const int NODES_NUM_COLUMNS = 4;
 
 template <class T> class ENVIRONMENT : public sc_module{
 public:
+
+	ofstream robot0_file;
+	ofstream robot1_file;
+	ofstream robot2_file;
 	//	PORTS
 	sc_in<bool> clock;
 
@@ -96,9 +100,8 @@ public:
 
 	void prc_nodes();
 	void prc_speed_control();
-	void prc_speed_control0();
-	void prc_speed_control1();
-	void prc_speed_control2();
+	void prc_speed_data();
+
 	void prc_print_environment();
 
 
@@ -217,7 +220,9 @@ public:
 		sensitive << clock.pos();
 		dont_initialize();
 
-
+		SC_METHOD(prc_speed_data);
+		sensitive << clock.pos();
+		dont_initialize();
 
 	
 		
