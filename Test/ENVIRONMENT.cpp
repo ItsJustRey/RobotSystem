@@ -1,9 +1,10 @@
+
 #include "ENVIRONMENT.h"
 typedef int environment_T;
 void ENVIRONMENT<environment_T>::prc_environment(){
 
 
-	
+
 
 	// UPDATE EACH ROBOT
 	for (int i = 0; i < *(_numRobots); i++){
@@ -12,21 +13,21 @@ void ENVIRONMENT<environment_T>::prc_environment(){
 		if (robot_start_moving_port[i].read() == 1){
 
 
-			///////////////
+			/////////////////
 			// UPDATE ROBOT PATH
 			for (int j = 0; j < 6; j++)
 			{
 
-				if (i ==0)
+				if (i == 0)
 					block0_array[j] = block0_array_port_in[j].read();
-				else if (i ==1)
+				else if (i == 1)
 					block1_array[j] = block1_array_port_in[j].read();
-				else if (i ==2)
+				else if (i == 2)
 					block2_array[j] = block2_array_port_in[j].read();
 			}
 			///////////////////
 
-			
+
 
 			r_cg_array[i] = e_cg_array_port[i].read();
 			r_ng_array[i] = e_ng_array_port[i].read();
@@ -34,7 +35,7 @@ void ENVIRONMENT<environment_T>::prc_environment(){
 
 			// CHECK IF SERVER ALLOWED ROBOT TO MOVE
 			// Server(out)-- >ROBOT(inout)--> ENVIRONMENT(in)
-			if (gridUpdate_port[i].read() == 1 && checkingBoundary[i] == true && abs(r_ng_array[i]-r_cg_array[i])== 1 )
+			if (gridUpdate_port[i].read() == 1 && checkingBoundary[i] == true && abs(r_ng_array[i] - r_cg_array[i]) == 1)
 			{
 				checkingBoundary[i] = false;		// finally received signal 
 				r_cg_array[i] = e_cg_array_port[i].read();					// UPDATE GRIDS
@@ -51,13 +52,13 @@ void ENVIRONMENT<environment_T>::prc_environment(){
 
 
 
-			
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-			if (gridUpdate_port[i].read() == 1 && checkingBoundary[i] == true && abs(r_ng_array[i] - r_cg_array[i]) !=1)
+
+			//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+			if (gridUpdate_port[i].read() == 1 && checkingBoundary[i] == true && abs(r_ng_array[i] - r_cg_array[i]) != 1)
 			{
-	
+
 				checkingBoundary[i] = false;		// finally received signal 
-				r_cg_array[i] = e_cg_array_port[i].read();					// UPDATE GRIDS
+				r_cg_array[i] = e_cg_array_port[i].read();		// UPDATE GRIDS
 				r_ng_array[i] = e_ng_array_port[i].read();				// UPDATE GRIDS
 				r_y_array[i] = 0;					// START FROM BEGINNING OF GRID
 				speedControl[i] = 0; // RESET
@@ -125,7 +126,7 @@ void ENVIRONMENT<environment_T>::prc_environment(){
 			}
 
 
-			
+
 
 			// CHECK IF ROBOT IS NEAR OBSTACLE
 			// Server(in) <-- ROBOT(inout) <-- Environment(out)
@@ -157,11 +158,6 @@ void ENVIRONMENT<environment_T>::prc_robot0_obstacle_detected(){
 
 	cout << " PRC_ROBOT0_OBSTACLE_DETECTED " << endl;
 
-	// EITHER MOVE OBJECT OR MOVE ROBOT IDK???
-
-	// PROB MOVE ROBOT
-
-
 
 }
 
@@ -170,21 +166,10 @@ void ENVIRONMENT<environment_T>::prc_robot1_obstacle_detected(){
 
 	cout << " PRC_ROBOT1_OBSTACLE_DETECTED " << endl;
 
-	// EITHER MOVE OBJECT OR MOVE ROBOT IDK???
-
-	// PROB MOVE ROBOT
-
-
-
 }
 
 void ENVIRONMENT<environment_T>::prc_nodes(){
-	//sc_int<8> node0_priority[E_NUM_ROBOTS];
-	//sc_int<8> node4_priority[E_NUM_ROBOTS];
-	//sc_int<8> node20_priority[E_NUM_ROBOTS];
-	//sc_int<8> node22_priority[E_NUM_ROBOTS];
-	//sc_int<8> node24_priority[E_NUM_ROBOTS];
-	cout << " prc_nodes() " << endl;
+
 	// FOR EACH ROBOT
 	for (int i = 0; i < *(_numRobots); i++){
 
@@ -195,9 +180,9 @@ void ENVIRONMENT<environment_T>::prc_nodes(){
 
 				//ROBOT 0
 				if (i == 0){
-					
-				   if (block0_array[j] == 4){
-						node4_robots_in_path[0]=1;
+
+					if (block0_array[j] == 4){
+						node4_robots_in_path[0] = 1;
 					}
 
 					else if (block0_array[j] == 20){
@@ -213,7 +198,7 @@ void ENVIRONMENT<environment_T>::prc_nodes(){
 
 				//ROBOT 1
 				else if (i == 1){
-					
+
 
 					if (block1_array[j] == 4){
 						node4_robots_in_path[1] = 1;
@@ -232,7 +217,7 @@ void ENVIRONMENT<environment_T>::prc_nodes(){
 
 				//ROBOT 2
 				else if (i == 2){
-					
+
 
 					if (block2_array[j] == 4){
 						node4_robots_in_path[2] = 1;
@@ -248,7 +233,7 @@ void ENVIRONMENT<environment_T>::prc_nodes(){
 						node24_robots_in_path[2] = 1;
 					}
 				}
-				
+
 			}
 
 		}
@@ -262,7 +247,7 @@ void ENVIRONMENT<environment_T>::prc_nodes(){
 		int robotIndex;
 		// CHECK IF THIS
 		if (node22_robots_in_path[i] == 1){
-			
+
 			int x = abs(22 - r_cg_array[1]);
 			int y = abs(22 - r_cg_array[2]);
 
@@ -274,62 +259,67 @@ void ENVIRONMENT<environment_T>::prc_nodes(){
 
 		}
 
-	
+
 	}
 
 }
-	
+
 void ENVIRONMENT<environment_T>::prc_speed_control(){
 
 
 	for (int i = 0; i < E_NUM_ROBOTS; i++){
 
-		// -1 = slow down            
-		if (speedControl[i] == -1){
+		if (robot_start_moving_port[i].read() == 1){
+			// -1 = slow down            
+			if (speedControl[i] == -1){
 
-			if (r_speed_array[i] - 1 < 0){
-				r_speed_array[i] = 0;
+				if (r_speed_array[i] - 1 < 0){
+					r_speed_array[i] = 0;
+				}
+				else{
+					r_speed_array[i] = r_speed_array[i] - 1;
+				}
+
 			}
-			else{
-				r_speed_array[i] = r_speed_array[i] - 1;
+
+			//  0 = reset
+			else if (speedControl[i] == 0){
+				if (i == 0){
+					r_speed_array[i] = *(_r0_speed);
+				}
+				else if (i == 1){
+					r_speed_array[i] = *(_r1_speed);
+				}
+				else if (i == 2){
+					r_speed_array[i] = *(_r2_speed);
+				}
+
+
+
 			}
-			
+
+			//  1 = normal
+			else if (speedControl[i] == 1){
+
+				r_speed_array[i] = r_speed_array[i];
+
+			}
+
+
+			// 2 = speed up
+			else if (speedControl[i] == 2){
+				if (r_speed_array[i] + 1 < 5){
+					r_speed_array[i] = 5;
+				}
+				else{
+					r_speed_array[i] = r_speed_array[i] + 1;
+				}
+
+
+			}
 		}
-
-		//  0 = reset
-		else if (speedControl[i] == 0){
-			if (i == 0){
-				r_speed_array[i] = *(_r0_speed);
-			}
-			else if (i == 1){
-				r_speed_array[i] = *(_r1_speed);
-			}
-			else if (i == 2){
-				r_speed_array[i] = *(_r2_speed);
-			}
-
-
-
-		}
-
-		//  1 = normal
-		else if (speedControl[i] == 1){
-
-			r_speed_array[i] = r_speed_array[i];
-
-		}
-
-
-		// 2 = speed up
-		else if (speedControl[i] == 2){
-			if (r_speed_array[i] + 1 < 5){
-				r_speed_array[i] = 5;
-			}
-			else{
-				r_speed_array[i] = r_speed_array[i] + 1;
-			}
-			
-
+		else{
+			r_speed_array[i] = 0;
 		}
 	}
 }
@@ -339,8 +329,7 @@ void ENVIRONMENT<environment_T>::prc_speed_control(){
 
 void ENVIRONMENT<environment_T>::prc_print_environment(){
 
-	//next_trigger(1.0,SC_SEC);
-	//next_trigger(1.0, SC_SEC);
+
 
 	cout << endl << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ENVIRONMENT~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 	cout << endl << "===============================ROBOT ARRAY=======================================" << endl;
@@ -418,7 +407,7 @@ void ENVIRONMENT<environment_T>::prc_print_environment(){
 	cout << endl << "==============NODES ARRAY=============" << endl;
 	cout << "|NI\t|RO\t|R1\t|R2\t" << endl;
 	cout << "=========================================" << endl;
-	
+
 	cout << "4\t";
 	for (int i = 0; i < E_NUM_ROBOTS; i++){
 
@@ -457,14 +446,11 @@ void ENVIRONMENT<environment_T>::prc_print_environment(){
 
 
 void ENVIRONMENT<environment_T>::prc_speed_data(){
-	
-	
 
 
-	/*robot0_file << r_speed_array[0] << " ";
-	robot1_file << r_speed_array[1] << " ";
-	robot2_file << r_speed_array[2] << " ";*/
-
+	robot0_file << r_speed_array[0] << endl;
+	robot1_file << r_speed_array[1] << endl;
+	robot2_file << r_speed_array[2] << endl;
 
 
 

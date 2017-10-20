@@ -6,7 +6,7 @@ void ROBOT<robot_T> ::prc_robot(){
 	if (robot_start_moving_port.read() == 1){
 
 		// UPDATE ROBOT PATH
-		cout << "ROBOT " << *(_id) << " PATH: " ;
+		cout << "ROBOT " << *(_id) << " PATH: ";
 		for (int j = 0; j < 8; j++)
 		{
 
@@ -60,12 +60,7 @@ void ROBOT<robot_T> ::print_robot(){
 	cout << "| Grid:      " << gridUpdate_port.read() << "\t\t\t|" << endl;
 	cout << "| Boundary:  " << boundary_port.read() << "\t\t\t|" << endl;
 
-	//cout << "| Env Status:       " << e_status_port.read() << "\t\t|" << endl;
 	cout << "=================================" << endl;
 
 
 }
-
-
-
-

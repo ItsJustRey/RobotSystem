@@ -8,21 +8,21 @@ const int NUM_OBSTACLES = 2;
 
 int sc_main(int argc, char *argv[]){
 
-	sc_core::sc_report_handler::set_actions("/IEEE_Std_1666/deprecated",
-		sc_core::SC_DO_NOTHING);
+	//sc_core::sc_report_handler::set_actions("/IEEE_Std_1666/deprecated",
+	//	sc_core::SC_DO_NOTHING);
 
 	// DEFINE SIGNALS
 	sc_clock					clk_sig("clk", 1, SC_SEC);
 	sc_signal<sc_uint<8> >		location_sig;
 
 	sc_signal<sc_uint<8> >		r_id_array_sig[NUM_ROBOTS];				// ROBOT -> SERVER  
-																		// ROBOT -> ENVIRONMENT
+	// ROBOT -> ENVIRONMENT
 
 	sc_signal<bool>				r_status_array_sig[NUM_ROBOTS];			// ROBOT -> SERVER
-																		// ROBOT -> ENVIRONMENT
+	// ROBOT -> ENVIRONMENT
 
 	sc_signal<bool>				s_status_array_sig[NUM_ROBOTS];			// SERVER -> ROBOT
-	
+
 	sc_signal<bool>				e_status_array_sig[NUM_ROBOTS];			// ENVIRONMENT -> ROBOT
 
 	sc_signal<bool>             boundary_sig[NUM_ROBOTS];
@@ -41,7 +41,7 @@ int sc_main(int argc, char *argv[]){
 	sc_signal<sc_int<8> >				e_cg_array_sig[NUM_ROBOTS];
 
 	sc_signal<sc_int<8> >				e_ng_array_sig[NUM_ROBOTS];
-	
+
 
 	sc_signal<sc_int<8> >		block0_array_sig[8];
 	sc_signal<sc_int<8> >		block1_array_sig[8];
@@ -66,9 +66,9 @@ int sc_main(int argc, char *argv[]){
 	for (int i = 0; i < 8; i++){
 		robot0.block_array_port_inout[i](block0_array_sig[i]);
 	}
-	
-	
-	// CREATE ROBOT 1
+
+
+	// //CREATE ROBOT 1
 	typedef int robot_T;
 	const robot_T r1_id = 1;
 	const robot_T r1_speed = 4;
@@ -117,8 +117,8 @@ int sc_main(int argc, char *argv[]){
 	const server_T server_numRobots = NUM_ROBOTS;
 	SERVER<server_T>	server1("server1", &server_numRobots, &r0_id, &r0_speed, &r0_grid, &r1_id, &r1_speed, &r1_grid, &r2_id, &r2_speed, &r2_grid);
 	server1.clock(clk_sig);
-	
-	
+
+
 	for (int i = 0; i < NUM_ROBOTS; i++){
 		server1.r_id_port[i](r_id_array_sig[i]);
 		server1.boundary_port[i](boundary_sig[i]);
@@ -131,7 +131,7 @@ int sc_main(int argc, char *argv[]){
 		server1.robot_start_moving_port[i](robot_start_moving_sig[i]);
 		server1.fifo_start[i](fifo_start_sig[i]);
 
-		
+
 	}
 
 	for (int i = 0; i < 8; i++){
@@ -146,9 +146,9 @@ int sc_main(int argc, char *argv[]){
 	const environment_T environment_numRobots = NUM_ROBOTS;
 	const environment_T numObstacles = NUM_OBSTACLES;
 	//ROBOT<robot_T> robots[NUM_ROBOTS];
-	ENVIRONMENT<environment_T>	environment1("environment", &environment_numRobots, &numObstacles, &r0_id, &r0_speed, &r0_grid, &r0_x, &r0_y, 
-																									&r1_id, &r1_speed, &r1_grid, &r1_x, &r1_y, 
-																									&r2_id, &r2_speed, &r2_grid, &r2_x, &r2_y);
+	ENVIRONMENT<environment_T>	environment1("environment", &environment_numRobots, &numObstacles, &r0_id, &r0_speed, &r0_grid, &r0_x, &r0_y,
+		&r1_id, &r1_speed, &r1_grid, &r1_x, &r1_y,
+		&r2_id, &r2_speed, &r2_grid, &r2_x, &r2_y);
 	environment1.clock(clk_sig);
 	for (int i = 0; i < NUM_ROBOTS; i++){
 		environment1.r_id_port[i](r_id_array_sig[i]);
@@ -162,7 +162,7 @@ int sc_main(int argc, char *argv[]){
 
 
 
-		
+
 
 	}
 
@@ -174,7 +174,7 @@ int sc_main(int argc, char *argv[]){
 
 
 
-	
+
 
 	// START AT 0 seconds
 
@@ -195,21 +195,14 @@ int sc_main(int argc, char *argv[]){
 	cout << "ROBOT 2 HAS ARRIVED " << sc_time_stamp() << endl;
 
 
-	/*ofstream robot0_file;
-	ofstream robot1_file;
-	ofstream robot2_file;
 
 
-	robot0_file.open("robot0_file.txt");
-	robot1_file.open("robot1_file.txt");
-	robot2_file.open("robot2_file.txt");*/
+
+
 
 	// CONTUINUE UNTIL 20 SECONDS
-	sc_start(80, SC_SEC);
+	sc_start(100, SC_SEC);
 
-	/*robot0_file.close();
-	robot1_file.close();
-	robot2_file.close();*/
 
 	return 0;
 }

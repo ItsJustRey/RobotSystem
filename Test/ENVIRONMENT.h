@@ -11,7 +11,7 @@ const int E_NUM_ROBOTS = 3;
 const int E_NUM_OBSTACLES = 2;
 const int GRID_WIDTH = 15;
 const int GRID_HEIGHT = 15;
-
+const int MAX_SPEED = 5;
 const int NUM_NODES = 4;
 const int NODES_NUM_COLUMNS = 4;
 
@@ -21,6 +21,7 @@ public:
 	ofstream robot0_file;
 	ofstream robot1_file;
 	ofstream robot2_file;
+
 	//	PORTS
 	sc_in<bool> clock;
 
@@ -53,14 +54,14 @@ public:
 	sc_signal<bool> checkingBoundary[E_NUM_ROBOTS];						// USED TO HOLD THE ROBOT WHILE CHECKING BOUNDARY
 	sc_signal<bool> detectedObstacle[E_NUM_ROBOTS];						// USED TO HOLD THE ROBOT WHILE CHECKING OBSTACLE
 	sc_signal<int> speedControl[E_NUM_ROBOTS];							// USED TO CONTROL SPEED OF EACH ROBOT....-1 = slow down       0 = normal       1 = speed up
-		
+
 
 
 	sc_in<sc_int<8> >e_cg_array_port[E_NUM_ROBOTS];
 	sc_in<sc_int<8> >e_ng_array_port[E_NUM_ROBOTS];
 
 
-	
+
 
 	sc_in<sc_int<8> >	block0_array_port_in[6];			// Server(out)-- >ROBOT(inout)--> ENVIRONMENT(in)
 	sc_in<sc_int<8> >	block1_array_port_in[6];			// Server(out)-- >ROBOT(inout)--> ENVIRONMENT(in)
@@ -74,9 +75,7 @@ public:
 
 
 
-	// NODES
-
-	//sc_int<8> nodes_index[NUM_NODES] = [0, 4, 20, 22, 24];
+	// NODES//
 
 
 	sc_int<8> node4_robots_in_path[E_NUM_ROBOTS];
@@ -84,15 +83,8 @@ public:
 	sc_int<8> node22_robots_in_path[E_NUM_ROBOTS];
 	sc_int<8> node24_robots_in_path[E_NUM_ROBOTS];
 
-	sc_int<8> node4_priority[E_NUM_ROBOTS];
-	sc_int<8> node20_priority[E_NUM_ROBOTS];
-	sc_int<8> node22_priority[E_NUM_ROBOTS];
-	sc_int<8> node24_priority[E_NUM_ROBOTS];
-	//sc_int<8>  e_nodes_array[NUM_NODES][NODES_NUM_COLUMNS];	// ENVIRONMENT DATA STRUCTURE (NODES)
 
-	sc_int<1> r0;
-	sc_int<1> r1;
-	sc_int<1> r2;
+
 
 	void prc_environment();
 	void prc_robot0_obstacle_detected();
@@ -106,13 +98,17 @@ public:
 
 
 	SC_HAS_PROCESS(ENVIRONMENT);
-	ENVIRONMENT(sc_module_name name, const T* numRobots, const T* numObstacles, const T* r0_id, const T* r0_speed, const T* r0_grid, const T* r0_x, const T* r0_y, 
-																				const T* r1_id, const T* r1_speed, const T* r1_grid, const T* r1_x, const T* r1_y, 
-																				const T* r2_id, const T* r2_speed, const T* r2_grid, const T* r2_x, const T* r2_y) :
-				sc_module(name), _numRobots(numRobots), _numObstacles(numObstacles), _r0_id(r0_id), _r0_speed(r0_speed), _r0_grid(r0_grid), _r0_x(r0_x), _r0_y(r0_y), 
-																					_r1_id(r1_id), _r1_speed(r1_speed), _r1_grid(r1_grid), _r1_x(r1_x), _r1_y(r1_y), 
-																					_r2_id(r2_id), _r2_speed(r2_speed), _r2_grid(r2_grid), _r2_x(r2_x), _r2_y(r2_y)
+	ENVIRONMENT(sc_module_name name, const T* numRobots, const T* numObstacles, const T* r0_id, const T* r0_speed, const T* r0_grid, const T* r0_x, const T* r0_y,
+		const T* r1_id, const T* r1_speed, const T* r1_grid, const T* r1_x, const T* r1_y,
+		const T* r2_id, const T* r2_speed, const T* r2_grid, const T* r2_x, const T* r2_y) :
+		sc_module(name), _numRobots(numRobots), _numObstacles(numObstacles), _r0_id(r0_id), _r0_speed(r0_speed), _r0_grid(r0_grid), _r0_x(r0_x), _r0_y(r0_y),
+		_r1_id(r1_id), _r1_speed(r1_speed), _r1_grid(r1_grid), _r1_x(r1_x), _r1_y(r1_y),
+		_r2_id(r2_id), _r2_speed(r2_speed), _r2_grid(r2_grid), _r2_x(r2_x), _r2_y(r2_y)
 	{
+
+		robot0_file.open("robot0_file.txt");
+		robot1_file.open("robot1_file.txt");
+		robot2_file.open("robot2_file.txt");
 
 		r_index_array[*(r0_id)] = *(r0_id);
 		r_cg_array[*(r0_id)] = *(r0_grid);
@@ -149,14 +145,14 @@ public:
 			e_robot_array[i][5] = r_status_array[i];
 			e_robot_array[i][6] = r_speed_array[i];
 		}
-		
+
 		for (int i = 0; i < *(_numRobots); i++){
 			node4_robots_in_path[i] = 0;
 			node20_robots_in_path[i] = 0;
 			node22_robots_in_path[i] = 0;
 			node24_robots_in_path[i] = 0;
 		}
-			
+
 
 		for (int i = 0; i < *(_numRobots); i++){
 			node4_priority[i] = 0;
@@ -181,16 +177,18 @@ public:
 		for (int i = 0; i < *(numRobots); i++){
 			detectedObstacle[i] = 0;
 		}
-		
+
 
 		cout << "CREATING ENVIRONMENT..." << "\tName: " << name << "\t# of Robots: " << *(_numRobots) << "\t# of Obstacles: " << *(_numObstacles) << endl;
-		
+
 		SC_METHOD(prc_environment);
 		sensitive << clock.pos();
 		dont_initialize();
+
 		SC_METHOD(prc_robot0_obstacle_detected);
 		sensitive << detectedObstacle[0].posedge_event();
 		dont_initialize();
+
 		SC_METHOD(prc_robot1_obstacle_detected);
 		sensitive << detectedObstacle[1].posedge_event();
 		dont_initialize();
@@ -200,35 +198,25 @@ public:
 		dont_initialize();
 
 		SC_METHOD(prc_speed_control);
-		//for (int i = 0; i < E_NUM_ROBOTS; i++){
-		//	sensitive << speedControl[i].value_changed_event();
-		//}
-
 		sensitive << clock.pos();
 		dont_initialize();
 
-		/*SC_METHOD(prc_speed_control1);
-		sensitive << slowDown[1].posedge_event();
+
+		SC_METHOD(prc_speed_data);
+		sensitive << clock.pos();
 		dont_initialize();
 
-		SC_METHOD(prc_speed_control2);
-		sensitive << slowDown[2].posedge_event();
-		dont_initialize();*/
 
 
 		SC_METHOD(prc_print_environment);
 		sensitive << clock.pos();
 		dont_initialize();
 
-		SC_METHOD(prc_speed_data);
-		sensitive << clock.pos();
-		dont_initialize();
 
-	
-		
+
 
 	}
-	
+
 private:
 	const T* _numRobots;
 	const T* _numObstacles;

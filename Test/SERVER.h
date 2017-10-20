@@ -1,6 +1,3 @@
-#include "systemc.h"
-#include <vector>
-#include <iostream>
 using namespace std;
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -13,7 +10,7 @@ template <class T> class SERVER : public sc_module {
 public:
 
 	sc_in<bool> clock;
-	
+
 
 	sc_in <sc_uint<8> > r_id_port[S_NUM_ROBOTS];			// USED TO IDENTIFY EACH ROBOT
 	sc_out<bool>	gridUpdate_port[S_NUM_ROBOTS];			// Server(out)-- >ROBOT(inout)--> ENVIRONMENT(in)
@@ -22,16 +19,16 @@ public:
 
 	sc_out<bool>	robot_start_moving_port[S_NUM_ROBOTS];		// Server(out)-- >ROBOT(inout)--> ENVIRONMENT(in)
 
-	
+
 	sc_int<8>  r_index_array[S_NUM_ROBOTS];					// COLUMN FOR EACH ROBOT INDEX
 	sc_int<8>  r_cg_array[S_NUM_ROBOTS];					// COLUMN FOR EACH ROBOT's CURRENT GRID
 	sc_int<8>  r_ng_array[S_NUM_ROBOTS];					// COLUMN FOR EACH ROBOT's NEXT GRID
 	sc_int<8>  r_status_array[S_NUM_ROBOTS];				// COLUMN FOR EACH ROBOT's STATUS
 
 	sc_int<8>  server_array[S_NUM_ROBOTS][NUM_COLUMNS];	// SERVER DATA STRUCTURE 
-	
-	
-	sc_in<bool>	s_start_robot_port[S_NUM_ROBOTS];	// WRITE TO THIS SIGNAL (CONNECTED TO SERVER from MAIN)
+
+
+	sc_in<bool>	s_start_robot_port[S_NUM_ROBOTS];	//// WRITE TO THIS SIGNAL (CONNECTED TO SERVER from MAIN)
 
 	sc_out<sc_int<8> >e_cg_array_port[S_NUM_ROBOTS];
 	sc_out<sc_int<8> >e_ng_array_port[S_NUM_ROBOTS];
@@ -40,12 +37,11 @@ public:
 	sc_int<8> block0_array[8];
 	sc_int<8> block1_array[8];
 	sc_int<8> block2_array[8];
-	
+
 	sc_int<8>array0_count;
 	sc_int<8>array1_count;
 	sc_int<8>array2_count;
-	
-	//vector<int> block_array;
+
 
 	sc_out<sc_int<8> >	block0_array_port_out[8];			// Server(out)-- >ROBOT(inout)--> ENVIRONMENT(in)
 	sc_out<sc_int<8> >	block1_array_port_out[8];			// Server(out)-- >ROBOT(inout)--> ENVIRONMENT(in)
@@ -69,11 +65,11 @@ public:
 
 
 	SERVER(sc_module_name name, const T* numRobots, const T* r0_id, const T* r0_speed, const T* r0_grid,
-													const T* r1_id, const T* r1_speed, const T* r1_grid, 
-													const T* r2_id, const T* r2_speed, const T* r2_grid) :
-			sc_module(name), _numRobots(numRobots), _r0_id(r0_id), _r0_speed(r0_speed), _r0_grid(r0_grid),
-													_r1_id(r1_id), _r1_speed(r1_speed), _r1_grid(r1_grid), 
-													_r2_id(r2_id), _r2_speed(r2_speed), _r2_grid(r2_grid)
+		const T* r1_id, const T* r1_speed, const T* r1_grid,
+		const T* r2_id, const T* r2_speed, const T* r2_grid) :
+		sc_module(name), _numRobots(numRobots), _r0_id(r0_id), _r0_speed(r0_speed), _r0_grid(r0_grid),
+		_r1_id(r1_id), _r1_speed(r1_speed), _r1_grid(r1_grid),
+		_r2_id(r2_id), _r2_speed(r2_speed), _r2_grid(r2_grid)
 	{
 		r_index_array[*(r0_id)] = *(r0_id);
 		r_cg_array[*(r0_id)] = *(r0_grid);
@@ -102,20 +98,20 @@ public:
 		sc_fifo <int> robot0_n_path(8);
 		sc_fifo <int> robot1_n_path(8);
 		sc_fifo <int> robot2_n_path(8);
-	
+
 
 		cout << "CREATING SERVER..." << "\tName: " << name << "\t# of Robots: " << *(_numRobots) << endl;
 
 		/*SC_CTHREAD(prc_robot_path,fifo_start.pos());*/
-		
+
 
 		SC_METHOD(prc_server);
 		sensitive << clock.pos();
 		dont_initialize();
-		
+
 		SC_METHOD(prc_robot0_start);
 		sensitive << fifo_start[0].pos();
-		
+
 
 		SC_METHOD(prc_robot1_start);
 		sensitive << fifo_start[1].pos();
@@ -127,8 +123,8 @@ public:
 		sensitive << clock.pos();
 		dont_initialize();
 	}
-	
-	
+
+
 
 private:
 	const T* _numRobots;
