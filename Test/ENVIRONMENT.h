@@ -154,13 +154,6 @@ public:
 		}
 
 
-		for (int i = 0; i < *(_numRobots); i++){
-			node4_priority[i] = 0;
-			node20_priority[i] = 0;
-			node22_priority[i] = 0;
-			node24_priority[i] = 0;
-		}
-
 		o_index_array[0] = 0;
 		o_cg_array[0] = 10;
 		o_ng_array[0] = 0;
