@@ -5,12 +5,12 @@
 using namespace std;
 const int ENVIRONMENT_MAX_ROBOTS = 5;
 const int ENVIRONMENT_MAX_OBSTACLES = 5;
-const int ROBOT_NUM_COLUMNS = 9;
+const int ROBOT_NUM_COLUMNS = 10;
 const int OBSTACLE_NUM_COLUMNS = 5;
 const int E_NUM_ROBOTS = 3;
 const int E_NUM_OBSTACLES = 2;
-const int GRID_WIDTH = 5;
-const int GRID_HEIGHT = 5;
+const int GRID_WIDTH = 15;
+const int GRID_HEIGHT = 15;
 
 const int NUM_NODES = 4;
 const int NODES_NUM_COLUMNS = 4;
@@ -46,8 +46,11 @@ public:
 	sc_int<8>	o_y_array[E_NUM_OBSTACLES];								// COLUMN FOR EACH OBSTACLE's Y coordinate within Grid
 	sc_int<8>  e_obstacle_array[E_NUM_OBSTACLES][OBSTACLE_NUM_COLUMNS];	// ENVIRONMENT DATA STRUCTURE (OBSTACLE)
 
-	sc_signal<bool> checkingBoundary[E_NUM_ROBOTS];		// USED TO HOLD THE ROBOT WHILE CHECKING BOUNDARY
-	sc_signal<bool> detectedObstacle[E_NUM_ROBOTS];		// USED TO HOLD THE ROBOT WHILE CHECKING OBSTACLE
+	sc_signal<bool> checkingBoundary[E_NUM_ROBOTS];						// USED TO HOLD THE ROBOT WHILE CHECKING BOUNDARY
+	sc_signal<bool> detectedObstacle[E_NUM_ROBOTS];						// USED TO HOLD THE ROBOT WHILE CHECKING OBSTACLE
+	sc_signal<int> speedControl[E_NUM_ROBOTS];							// USED TO CONTROL SPEED OF EACH ROBOT....-1 = slow down       0 = normal       1 = speed up
+		
+
 
 	sc_in<sc_int<8> >e_cg_array_port[E_NUM_ROBOTS];
 	sc_in<sc_int<8> >e_ng_array_port[E_NUM_ROBOTS];
@@ -67,7 +70,6 @@ public:
 
 
 
-
 	// NODES
 
 	//sc_int<8> nodes_index[NUM_NODES] = [0, 4, 20, 22, 24];
@@ -78,18 +80,25 @@ public:
 	sc_int<8> node22_robots_in_path[E_NUM_ROBOTS];
 	sc_int<8> node24_robots_in_path[E_NUM_ROBOTS];
 
-	sc_int<8> node0_priority[E_NUM_ROBOTS];
 	sc_int<8> node4_priority[E_NUM_ROBOTS];
 	sc_int<8> node20_priority[E_NUM_ROBOTS];
 	sc_int<8> node22_priority[E_NUM_ROBOTS];
 	sc_int<8> node24_priority[E_NUM_ROBOTS];
 	//sc_int<8>  e_nodes_array[NUM_NODES][NODES_NUM_COLUMNS];	// ENVIRONMENT DATA STRUCTURE (NODES)
 
+	sc_int<1> r0;
+	sc_int<1> r1;
+	sc_int<1> r2;
+
 	void prc_environment();
 	void prc_robot0_obstacle_detected();
 	void prc_robot1_obstacle_detected();
 
 	void prc_nodes();
+	void prc_speed_control();
+	void prc_speed_control0();
+	void prc_speed_control1();
+	void prc_speed_control2();
 	void prc_print_environment();
 
 
@@ -145,6 +154,14 @@ public:
 			node24_robots_in_path[i] = 0;
 		}
 			
+
+		for (int i = 0; i < *(_numRobots); i++){
+			node4_priority[i] = 0;
+			node20_priority[i] = 0;
+			node22_priority[i] = 0;
+			node24_priority[i] = 0;
+		}
+
 		o_index_array[0] = 0;
 		o_cg_array[0] = 10;
 		o_ng_array[0] = 0;
@@ -178,6 +195,23 @@ public:
 		SC_METHOD(prc_nodes);
 		sensitive << clock.pos();
 		dont_initialize();
+
+		SC_METHOD(prc_speed_control);
+		//for (int i = 0; i < E_NUM_ROBOTS; i++){
+		//	sensitive << speedControl[i].value_changed_event();
+		//}
+
+		sensitive << clock.pos();
+		dont_initialize();
+
+		/*SC_METHOD(prc_speed_control1);
+		sensitive << slowDown[1].posedge_event();
+		dont_initialize();
+
+		SC_METHOD(prc_speed_control2);
+		sensitive << slowDown[2].posedge_event();
+		dont_initialize();*/
+
 
 		SC_METHOD(prc_print_environment);
 		sensitive << clock.pos();

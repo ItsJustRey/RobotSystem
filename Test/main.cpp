@@ -49,7 +49,7 @@ int sc_main(int argc, char *argv[]){
 	// CREATE ROBOT 0
 	typedef int robot_T;
 	const robot_T r0_id = 0;
-	const robot_T r0_speed = 1;
+	const robot_T r0_speed = 3;
 	robot_T r0_grid = 1;
 	robot_T r0_x = 0;
 	robot_T r0_y = 0;
@@ -71,7 +71,7 @@ int sc_main(int argc, char *argv[]){
 	// CREATE ROBOT 1
 	typedef int robot_T;
 	const robot_T r1_id = 1;
-	const robot_T r1_speed = 1;
+	const robot_T r1_speed = 2;
 	robot_T r1_grid = 44;
 	robot_T r1_x = 0;
 	robot_T r1_y = 4;
@@ -195,7 +195,7 @@ int sc_main(int argc, char *argv[]){
 	cout << "ROBOT 2 HAS ARRIVED " << sc_time_stamp() << endl;
 
 	// CONTUINUE UNTIL 20 SECONDS
-	sc_start(50, SC_SEC);
+	sc_start(55, SC_SEC);
 
 	
 
